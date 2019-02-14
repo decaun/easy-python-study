@@ -2,8 +2,6 @@
 #or 1st install nosetests3 from apt-get > sudo apt-get install python-nose python3-nose
 #then issue command nosetests3 test.py / nosetests unit_test.py
 
-
-
 from unittest import TestCase # 1
 from mock import patch, call # 2
 from nose.tools import assert_equal,assert_list_equal # 3
