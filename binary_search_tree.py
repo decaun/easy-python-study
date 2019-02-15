@@ -42,7 +42,7 @@ class binary_search_tree:
 			print (str(cur_node.value))
 			self._print_tree(cur_node.right_child)
 
-	def height(self):
+	def height(self):#analyze stack
 		if self.root!=None:
 			return self._height(self.root,0)
 		else:
@@ -50,8 +50,8 @@ class binary_search_tree:
 
 	def _height(self,cur_node,cur_height):
 		if cur_node==None: return cur_height
-		left_height=self._height(cur_node.left_child,cur_height+1)
-		right_height=self._height(cur_node.right_child,cur_height+1)
+		left_height=self._height(cur_node.left_child,cur_height+1)# 1st instance
+		right_height=self._height(cur_node.right_child,cur_height+1)# 2nd instance
 		return max(left_height,right_height)
 
 	def find(self,value):
