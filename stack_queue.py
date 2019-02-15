@@ -28,7 +28,7 @@ class Queue:
         if self.is_empty():
             return None
         else:
-            return self.queue.pop()
+            return self.queue.pop()#look for pop algorithm used
     def size(self):
         return len(self.queue)
     def is_empty(self):
