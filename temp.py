@@ -1,4 +1,6 @@
-'''def get_squares_gen(n): # generator approach
+''' Generator_Example
+
+def get_squares_gen(n): # generator approach
     for x in range(n):
         yield x ** 2 # we yield, we don't return
         
@@ -8,7 +10,22 @@ print(next(result))
 print(next(result))
 print(next(result))
 print(next(result))
-print(result.__next__())'''
+print(result.__next__())
+
+'''
+
+''' Custom_Exception_Handling 
+
+class CustomException(Exception):
+    pass
+    
+try:
+    out="tried"
+    raise CustomException(out)
+except CustomException as print_out:
+    print(print_out)
+    
+'''
 
 import binary_search_tree
 

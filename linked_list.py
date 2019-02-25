@@ -33,7 +33,7 @@ class linked_list:
         
     def get(self,index):
         if index>=self.length():
-            print ("ERROR: 'Get' index is out of range!")
+            print ("ERROR: 'Get' index is out of range! ")
             return None
         cur_idx=0
         cur_node=self.head
