@@ -7,4 +7,3 @@ class test_1(TestCase):
         expected=23
         result=multiples_3_5()
         assert_equal(result,expected)
-        
