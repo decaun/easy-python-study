@@ -1,5 +1,6 @@
 #from shell run python3 -m "nose" tests.py
 #or 1st install nosetests3 from apt-get > sudo apt-get install python-nose python3-nose
+#2nd sudo python3 -m pip install -U mock
 #then issue command nosetests3 tests.py / nosetests tests.py
 
 from unittest import TestCase # 1
