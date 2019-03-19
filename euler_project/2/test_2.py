@@ -4,6 +4,6 @@ from sol_2 import fibonacci
 
 class test_1(TestCase):
     def test_1(self):
-        expected=1
-        result=fibonacci()
+        expected=[1, 2, 3, 5, 8]
+        result=list(fibonacci(6))
         assert_equal(result,expected)

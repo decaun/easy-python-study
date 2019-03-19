@@ -1,11 +1,21 @@
-def fibonacci(var):
-    a,b=1,2
-    for _ in range(1,var):
+def fibonacci(limit=10):
+    a,b=0,1
+    while b<limit:
         a,b=b,a+b
-        
-    return a
+        yield b
 
+fib=fibonacci(4000000)
+sum=0
+for i in fib:
+    if i%2==0:
+        sum+=i
 
+print(sum)
+
+fib=None
+fib=fibonacci(40)
+print(list(fib))
+"""
 sum=0
 x=1
 f=fibonacci(x)
@@ -16,3 +26,4 @@ while f<4000000:
         x+=1
 
 print(sum)
+"""
