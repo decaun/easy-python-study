@@ -11,19 +11,3 @@ for i in fib:
         sum+=i
 
 print(sum)
-
-fib=None
-fib=fibonacci(40)
-print(list(fib))
-"""
-sum=0
-x=1
-f=fibonacci(x)
-while f<4000000:
-    f=fibonacci(x)
-    if f%2==0:
-        sum+=f
-        x+=1
-
-print(sum)
-"""
