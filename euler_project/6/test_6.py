@@ -2,7 +2,7 @@ from unittest import TestCase
 from nose.tools import assert_equal
 from sol_6 import sos_diff,sum_of_squares,square_of_sum
 
-class test_1(TestCase):
+class interface_test(TestCase):
     def test_1(self):
         expected=385
         result=sum_of_squares(10)
