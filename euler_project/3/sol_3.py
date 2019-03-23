@@ -9,16 +9,12 @@ def find_div(var):
     result=[]
 
     while div<=var:
-
         if var%div==0:
             var/=div
             result.append(div)
-
         div+=1
-
     return result
 
 if __name__=="__main__":
-    
     print(max(find_div(600851475143)))
 

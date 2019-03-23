@@ -8,19 +8,15 @@ By considering the terms in the Fibonacci sequence whose values do not exceed fo
 
 def fibonacci(limit=10):
     a,b=0,1
-    
     while b<limit:
         a,b=b,a+b
         yield b
 
-fib=fibonacci(4000000)
-sum=0
-
-for i in fib:
-
-    if i%2==0:
-        sum+=i
 
 if __name__=="__main__":
-
-    print(sum)
+        fib=fibonacci(4000000)
+        _sum=0
+        for i in fib:
+            if i%2==0:
+                _sum+=i
+        print(_sum)
