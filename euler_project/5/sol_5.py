@@ -7,7 +7,6 @@ What is the smallest positive number that is evenly divisible by all of the numb
 def find(missing,dest):
     found_list=[]
     found_mul=1
-
     for i in range(2,dest):
         while dest%i==0:
             dest/=i

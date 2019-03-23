@@ -7,7 +7,6 @@ What is the largest prime factor of the number 600851475143 ?
 def find_div(var):
     div=2
     result=[]
-
     while div<=var:
         if var%div==0:
             var/=div
