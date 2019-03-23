@@ -14,7 +14,6 @@ def search_for_next_prime(current=3):
         current+=1
     return next_prime
 
-
 def prime(order=6):
     prime_counter=0
     previous_prime=search_for_next_prime(order-1)
@@ -24,7 +23,6 @@ def prime(order=6):
         _next_prime=search_for_next_prime(previous_prime+prime_counter)        
         prime_counter+=1
     return current_prime
-
 
 if __name__=="__main__":
     print(prime(1))
