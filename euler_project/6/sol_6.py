@@ -10,17 +10,24 @@ Hence the difference between the sum of the squares of the first ten natural num
 Find the difference between the sum of the squares of the first one hundred natural numbers and the square of the sum.
 """
 def sum_of_squares(last):
+
     if last==1:
         return 1
+        
     else:
         return last**2 + sum_of_squares(last-1)
     
 def square_of_sum(last):
+
     for i in range(1,last):
         last+=i
+
     return last**2
 
 def sos_diff(last):
+
     return abs(square_of_sum(last)-sum_of_squares(last))
 
-print(sos_diff(100))
+if __name__=="__main__":
+
+    print(sos_diff(100))

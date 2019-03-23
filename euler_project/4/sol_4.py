@@ -7,10 +7,13 @@ Find the largest palindrome made from the product of two 3-digit numbers.
 def palindrome_2():
     result=[]
     a,b=999,998
+
     while a>100:
         b=998
         a-=1
+        
         while b>100:
+
             try:
                 x=list(str(a*b))
                 assert x[-1] == x[0]
@@ -20,6 +23,9 @@ def palindrome_2():
             except:
                 pass
             b-=1
+
     return max(result)
 
-print(palindrome_2())
+if __name__=="__main__":
+
+    print(palindrome_2())
