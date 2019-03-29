@@ -13,9 +13,9 @@ def search_for_next_prime(current=1):
             if current%i==0:
                 broken=True
                 break
-                
         if broken==None:
             next_prime=current
+            
     return next_prime
 
 
@@ -25,8 +25,8 @@ def prime(order=1):
     while prime_counter < order:
         prime=search_for_next_prime(prime)
         prime_counter+=1
+        
     return prime
-
-
+    
 if __name__=="__main__":
     print(prime(10001))

@@ -58,8 +58,8 @@ def greatest_product(adj=4,number='''\
             
         if combination > max_combination:
             max_combination=combination
+            
     return max_combination
-
 
 if __name__=="__main__":
     print(greatest_product(13))
