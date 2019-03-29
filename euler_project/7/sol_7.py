@@ -27,5 +27,6 @@ def prime(order=1):
         prime_counter+=1
     return prime
 
+
 if __name__=="__main__":
     print(prime(10001))
