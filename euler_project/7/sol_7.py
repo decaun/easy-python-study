@@ -7,26 +7,24 @@ def search_for_next_prime(current=2):
     next_prime=None
     while next_prime==None:
         current+=1
+        
         for i in range(2,current):
-            if current%i!=0:
-                next_prime=current
-            else:
-                break
+            if current%i==0:
+                current+=1
+            
+        next_prime=current
+        
     return next_prime
 
 
-def prime(order=6):
-    prime_counter=0
-    previous_prime=None
+def prime(order=1):
+    prime_counter=1
     
+    prime=search_for_next_prime()  
     while prime_counter < order:
-            
-            if previous_prime==None:
-                previous_prime=search_for_next_prime(previous_prime)
-            else:
-                prime_counter+=1
+        prime=search_for_next_prime(prime)
+        prime_counter+=1
+        
+    return prime
 
-    return previous_prime
-
-
-print(search_for_next_prime(13))
+print(prime(10000))
