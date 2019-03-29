@@ -12,10 +12,11 @@ def fibonacci(limit=10):
         a,b=b,a+b
         yield b
 
-fib=fibonacci(4000000)
-sum=0
-for i in fib:
-    if i%2==0:
-        sum+=i
 
-print(sum)
+if __name__=="__main__":
+        fib=fibonacci(4000000)
+        _sum=0
+        for i in fib:
+            if i%2==0:
+                _sum+=i
+        print(_sum)

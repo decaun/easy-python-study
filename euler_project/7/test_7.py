@@ -5,7 +5,7 @@ from sol_7 import prime
 class interface_test(TestCase):
     def test_1(self):
         expected=2
-        result=prime(1)
+        result=prime(0)
         assert_equal(result,expected)
         
     def test_2(self):
@@ -26,6 +26,16 @@ class interface_test(TestCase):
     def test_5(self):
         expected=11
         result=prime(5)
+        assert_equal(result,expected)
+
+    def test_6(self):
+        expected=3571
+        result=prime(500)
+        assert_equal(result,expected)
+        
+    def test_7(self):
+        expected=5503
+        result=prime(727)
         assert_equal(result,expected)
 
 

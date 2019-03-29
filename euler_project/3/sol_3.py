@@ -14,5 +14,6 @@ def find_div(var):
         div+=1
     return result
 
-print(find_div(600851475143))
+if __name__=="__main__":
+    print(max(find_div(600851475143)))
 

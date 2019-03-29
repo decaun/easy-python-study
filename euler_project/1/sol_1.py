@@ -11,5 +11,6 @@ def multiples_3_5(var=9):
             result=result+var
         var-=1
     return result
-    
-print (multiples_3_5(999))
+
+if __name__=="__main__":
+    print (multiples_3_5(999))

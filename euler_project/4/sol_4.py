@@ -22,4 +22,5 @@ def palindrome_2():
             b-=1
     return max(result)
 
-print(palindrome_2())
+if __name__=="__main__":
+    print(palindrome_2())

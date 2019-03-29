@@ -12,7 +12,7 @@ def find(missing,dest):
             dest/=i
             found_list.append(i)
     found_list.append(dest)
-    
+
     for i in found_list:
         if missing%i!=0:
             found_mul*=i
@@ -31,7 +31,8 @@ def seq_gen(var):
             #print("current {}, wanted {}, return {}".format(result,i,find(result,i)))
     return int(result)
 
-print(seq_gen(20))
+if __name__=="__main__":
+    print(seq_gen(20))
 
 
 #print(seq_gen(10))
