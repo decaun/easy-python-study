@@ -23,4 +23,5 @@ def square_of_sum(last):
 def sos_diff(last):
     return abs(square_of_sum(last)-sum_of_squares(last))
 
-print(sos_diff(100))
+if __name__=="__main__":
+    print(sos_diff(100))
