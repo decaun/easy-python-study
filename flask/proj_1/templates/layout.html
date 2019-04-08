@@ -16,7 +16,7 @@
     {% endif %}
 </head>
 <body>  
-    <div class="d-flex flex-column">
+    <div class="d-flex flex-column align-self-end">
         <ul class="nav justify-content-end nav-pills">
             <li class="nav-item">
                 <a class="nav-link active text-white bg-dark" href="#">Active</a>
@@ -38,15 +38,14 @@
                   <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
                 </li>
         </ul>
-        <ul class="nav justify-content-end nav-pills">
-            <li class="nav-item">
-                <a class="nav-link active text-white bg-dark" href="#">Active</a>
-            </li>
-        </ul>
+        <div class="container" style="width: 10%;">
+            <label for="formControlRange">Volume</label>
+            <input type="range" class="form-control-range w-3" id="formControlRange">
+        </div>
     </div>
 
     <div class="d-flex align-items-center justify-content-center p-4">
-        <div class="d-flex flex-column">
+        <div class="d-flex flex-column ">
             <h1>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren,</h1>
             <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
         </div>
@@ -59,8 +58,12 @@
                 <div class="d-flex flex-column">
                     <div class="row justify-content-center">
                         <form  class="form-inline my-2 my-lg-0 justify-content-center ">
-                            <input class="form-control w-65 d-inline-block" type="text" placeholder="Search">
-                            <button class="btn btn-outline-success w-35 d-inline-block text-sm-left" type="submit">Search</button>
+                            <div class="input-group mb-3 p-1">
+                                <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="button-addon2">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Search</button>
+                                    </div>
+                            </div>
                         </form>
                     </div>
                     <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
