@@ -2,6 +2,7 @@
 #$env:FLASK_DEBUG=1
 #$env:FLASK_RUN_PORT=80 - bi sike yaramadi
 #flask run --host=127.0.0.1 --port=5000
+#python -m flask run --host=127.0.0.1 --port=5000
 from flask import Flask,render_template,jsonify,request,url_for
 import requests
 import json
