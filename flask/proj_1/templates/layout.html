@@ -15,7 +15,8 @@
         <title>Spotilab</title>
     {% endif %}
 </head>
-<body>
+<body>  
+    <div class="d-flex flex-column">
         <ul class="nav justify-content-end nav-pills">
             <li class="nav-item">
                 <a class="nav-link active text-white bg-dark" href="#">Active</a>
@@ -37,6 +38,12 @@
                   <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
                 </li>
         </ul>
+        <ul class="nav justify-content-end nav-pills">
+            <li class="nav-item">
+                <a class="nav-link active text-white bg-dark" href="#">Active</a>
+            </li>
+        </ul>
+    </div>
 
     <div class="d-flex align-items-center justify-content-center p-4">
         <div class="d-flex flex-column">
@@ -49,8 +56,17 @@
     <div class="container-fluid fixed-left overflow-auto">
         <div class="row">
             <div class="col-2">
-                {% block home_block %}
-                {% endblock %}
+                <div class="d-flex flex-column">
+                    <div class="row justify-content-center">
+                        <form  class="form-inline my-2 my-lg-0 justify-content-center ">
+                            <input class="form-control w-65 d-inline-block" type="text" placeholder="Search">
+                            <button class="btn btn-outline-success w-35 d-inline-block text-sm-left" type="submit">Search</button>
+                        </form>
+                    </div>
+                    <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+                    {% block home_block %}
+                    {% endblock %}
+                </div>
             </div>
             <div class="col-7">
                 <table class="table">
