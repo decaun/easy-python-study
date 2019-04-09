@@ -28,8 +28,11 @@ class house():
 
 if __name__=="__main__":
     ben=house()
+    sam=house()
     print(ben.be_wall)
     house.flush(ben)
     house.increase_wall()
     print("ben has {} walls also ".format(ben.be_wall))
+    sam.cimney=1
     print(ben.cimney)
+    print(sam.cimney)
