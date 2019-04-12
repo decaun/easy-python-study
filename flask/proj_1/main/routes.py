@@ -3,20 +3,6 @@ from main.forms import PostForm
 from main import app,db
 from flask import render_template,jsonify,request,url_for
 
-posts=[
-    {
-            'author':'ali',
-            'title':'best playlist ever',
-            'content':'check dis aut',
-            'date_posted':'April 20,2019'
-    },
-    {
-            'author':'veli',
-            'title':'better playlist',
-            'content':'check dis instead',
-            'date_posted':'April 21,2019'
-    }
-]
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
