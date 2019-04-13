@@ -39,26 +39,13 @@ class Post(db.Model):
 
         def __repr__(self):
             return f"Post('{self.title}', '{self.date_posted}')"
-<<<<<<< HEAD
-'''
-=======
-
->>>>>>> f20009901dfa5c6f491c17c09be3420f2c036ea7
+            
 class Playlist(db.Model):
         id = db.Column(db.Integer, primary_key=True)
         title = db.Column(db.String(100), nullable=False)
         date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-<<<<<<< HEAD
-        content = db.Column(db.Text, nullable=False)
-        user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-
-        def __repr__(self):
-            return f"Post('{self.title}', '{self.date_posted}')"
-'''
-=======
         json_content = db.Column(db.Text, nullable=False)
         user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
         def __repr__(self):
             return f"Post('{self.title}', '{self.date_posted}')"
->>>>>>> f20009901dfa5c6f491c17c09be3420f2c036ea7
