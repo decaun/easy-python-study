@@ -7,6 +7,7 @@ playlist_1=Playlist(title='Playlist 1',json_content='song 1',user_id=user.id)
 post_1=Post(title='Post 1',content='comment 1',user_id=user.id, playlist_id=playlist.id)
 db.session.add(user_1)
 db.session.add(playlist_1)
+db.session.add(post_1)
 db.session.commit()
 User.query.all()
 User.query.first()
@@ -15,6 +16,19 @@ user=User.query.filter_by(username='Deniz').first()
 for post in user.posts:
     	print(post.title)
 db.drop_all()
+
+user=User.query.get(1)
+user.playlist
+user.comment
+
+playlist=Playlist.query.get(1)
+playlist.posts
+playlist.author
+
+post=Post.query.get(1)
+post.author
+post.topic
+
 '''
 
 

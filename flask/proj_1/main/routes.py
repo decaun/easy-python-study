@@ -9,7 +9,7 @@ def home():
     posts = Post.query.all()
     form = PostForm()
     if form.validate_on_submit():
-        post = Post(title=form.title.data, content=form.content.data, user_id=1)
+        post = Post(title=form.title.data, content=form.content.data, user_id=1, playlist_id=1 )
         db.session.add(post)
         db.session.commit()
     return render_template('home.html',posts=posts,form=form, legend='New Post')

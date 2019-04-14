@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block home_block %}
     {% for post in posts %}
-        <h1>{{ post.title }}</h1>
+        <h1>{{ post.topic.title }}</h1>
     {% endfor %}
 {% endblock home_block %}
 {% block create_comment %}
