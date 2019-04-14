@@ -1,4 +1,4 @@
-from main.models import User, Post
+from main.models import User, Post, Playlist
 from main.forms import PostForm
 from main import app,db
 from flask import render_template,jsonify,request,url_for
@@ -7,12 +7,13 @@ from flask import render_template,jsonify,request,url_for
 @app.route("/", methods=['GET', 'POST'])
 def home():
     posts = Post.query.all()
+    playlists = Playlist.query.all()
     form = PostForm()
     if form.validate_on_submit():
         post = Post(title=form.title.data, content=form.content.data, user_id=1, playlist_id=1 )
         db.session.add(post)
         db.session.commit()
-    return render_template('home.html',posts=posts,form=form, legend='New Post')
+    return render_template('home.html',posts=posts,form=form, playlists=playlists, legend='New Post')
 
 @app.route("/topic")
 def topic():
