@@ -21,6 +21,3 @@ def Topic(playlist_id=None):
         return redirect(url_for('Topic', playlist_id=playlist_selected.id))
     return render_template('home.html',posts=posts,form=form, playlists=playlists,playlist_selected=playlist_selected, legend='New Post')
 
-@app.route("/topic")
-def topic():
-    return render_template('topic.html',title_var='Topic#1')
