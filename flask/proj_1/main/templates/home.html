@@ -1,8 +1,14 @@
 {% extends "layout.html" %}
 {% block home_block %}
-    {% for playlist in playlists %}
-        <h1>{{ playlist.title }}</h1>
-    {% endfor %}
+    <div class="list-group">
+        {% for playlist in playlists %}
+        <a href="/{{ playlist.id }}" class="list-group-item list-group-item-action {% if playlist.id == playlist_selected.id %}active{% endif %} ">{{ playlist.title }}
+         <div class="badge badge-primary text-wrap" style="width: auto;">#default</div>
+        </a>
+        
+        {% endfor %}
+        
+    </div>
 {% endblock home_block %}
 {% block create_comment %}
 <div class="content-section">
