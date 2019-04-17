@@ -37,13 +37,10 @@ def Login():
 @app.route('/auth/',methods=['GET'])
 def Auth():
     if request.method == 'GET':
-        print('user_token')
-        print(str(request.args['code']))
         code = str(request.args['code'])
         token_info = sp_oauth.get_access_token(code)
         access_token = token_info['access_token']
         if access_token:
-            print("Access token available! Trying to get user information...")
             sp = spotipy.Spotify(access_token)
             results = sp.current_user()
             print(results)
