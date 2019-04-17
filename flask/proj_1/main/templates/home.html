@@ -1,15 +1,23 @@
 {% extends "layout.html" %}
-{% block home_block %}
-    <div class="list-group">
-        {% for playlist in playlists %}
-        <a href="/{{ playlist.id }}" class="list-group-item list-group-item-action {% if playlist.id == playlist_selected.id %}active{% endif %} ">{{ playlist.title }}
-         <div class="badge badge-primary text-wrap" style="width: auto;">#default</div>
-        </a>
-        
-        {% endfor %}
-        
-    </div>
-{% endblock home_block %}
+{% block playlist_block %}
+    <table class="table">
+        <caption>List of users</caption>
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Album</th>
+                </tr>
+            </thead>
+                <tbody>
+                    {% for song in playlist_selected.songs %}
+                    <tr>
+                        <td>{{song.name}}</td>
+                        <td>{{song.album}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+    </table>
+{% endblock playlist_block %}
 {% block create_comment %}
 <div class="content-section">
     <form method="POST" action="">

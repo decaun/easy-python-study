@@ -67,42 +67,20 @@
                         </form>
                     </div>
                     <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-                    {% block home_block %}
-                    {% endblock %}
+                    <div class="list-group">
+                        {% for playlist in playlists %}
+                        <a href="/{{ playlist.id }}" class="list-group-item list-group-item-action {% if playlist.id == playlist_selected.id %}text-light bg-dark{% endif %} ">{{ playlist.title }}
+                            <div class="badge badge-primary text-wrap  {% if playlist.id == playlist_selected.id %}text-dark bg-light{% else %}text-light bg-dark{% endif %} "" style="width: auto;">#default</div>
+                        </a>
+                        
+                        {% endfor %}
+                        
+                    </div>
                 </div>
             </div>
             <div class="col-7">
-                <table class="table">
-                    <caption>List of users</caption>
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">First</th>
-                                <th scope="col">Last</th>
-                                <th scope="col">Handle</th>
-                            </tr>
-                        </thead>
-                            <tbody>
-                                <tr>
-                                    <th scope="row">1</th>
-                                    <td>Mark</td>
-                                    <td>Otto</td>
-                                    <td>@mdo</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">2</th>
-                                    <td>Jacob</td>
-                                    <td>Thornton</td>
-                                    <td>@fat</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">3</th>
-                                    <td>Larry</td>
-                                    <td>the Bird</td>
-                                    <td>@twitter</td>
-                                </tr>
-                            </tbody>
-                </table>
+                {% block playlist_block %}
+                {% endblock %}
                 {% block create_comment %}
                 {% endblock  %}
                 {% block comment_block %}
