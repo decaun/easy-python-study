@@ -3,7 +3,8 @@ from main import db
 db.create_all()
 from main.models import User,Post,Playlist,Song
 
-user_1=User(username='Deniz',email='anadndas@demo.com',password='test')
+
+user_1=User(username='Deniz',email='anadndas@demo.com',image_url='test')
 db.session.add(user_1)
 db.session.commit()
 user=User.query.get(1)
@@ -68,14 +69,15 @@ def load_user(user_id):
 class User(db.Model, UserMixin):
         id = db.Column(db.Integer, primary_key=True)
         username = db.Column(db.String(20), unique=True, nullable=False)
-        email = db.Column(db.String(120), unique=True, nullable=False)
-        password = db.Column(db.String(60), nullable=False)
+        email = db.Column(db.String(30), unique=True, nullable=False)
+        image_url = db.Column(db.String(120), nullable=False)
         playlist = db.relationship('Playlist', backref='author', lazy=True)
         posts = db.relationship('Post', backref='author', lazy=True)
         
 
         def __repr__(self):
-            return f"User('{self.username}', '{self.email}')"
+            return f"User('{self.id}', {self.username}', '{self.email}')"
+
 
 
 class Playlist(db.Model):
