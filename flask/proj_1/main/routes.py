@@ -25,10 +25,11 @@ class SpotifyApi():
 
     @property
     def user_playlists(self):
-        playlists=self.active.current_user_playlists(limit=5, offset=0)#limit max 50 need to offset after 50 for next 50
+        playlists=self.active.current_user_playlists(limit=1, offset=0)#limit max 50 need to offset after 50 for next 50
         for playlist in range(0,len(playlists['items'])):
             print(f"Playlist {playlist}: {playlists['items'][playlist]['name']}")
             print(f"Playlist ID {playlist}: {playlists['items'][playlist]['id']}")
+        print(f"All total: {playlists['total']}")
         
 
 
@@ -62,7 +63,15 @@ def Topic(playlist_id=None):
 
 @app.route('/login')
 def Login():
-    return redirect(spotify.current_auth.get_authorize_url())
+    try:
+        
+        results = spotify.active.me()
+        user=load_user(results['id'])
+        spotify.activate(spotify,user.access_token)
+        login_user(user, remember=True)
+        return redirect(url_for('Topic'))
+    except:
+        return redirect(spotify.current_auth.get_authorize_url())
 
 @app.route('/auth/',methods=['GET'])
 def Auth():
@@ -72,8 +81,10 @@ def Auth():
             code = str(request.args['code'])
             token_info = spotify.current_auth.get_access_token(code)
             access_token = token_info['access_token']
-        except:
+            
+        except Exception as e:
             print("Can not retrieve token")
+            print(e)
             #results = spotify.active.me()
             #print(results)
             return redirect(url_for('Topic'))

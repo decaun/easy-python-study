@@ -4,7 +4,7 @@ db.create_all()
 from main.models import User,Post,Playlist,Song
 
 
-user_1=User(username='Deniz',email='anadndas@demo.com',image_url='test',access_token='access_token')
+user_1=User(id='1', username='Deniz',email='anadndas@demo.com',image_url='test',access_token='access_token')
 db.session.add(user_1)
 db.session.commit()
 user=User.query.get(1)
@@ -64,10 +64,10 @@ from flask_login import UserMixin
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return User.query.get(str(user_id))
 
 class User(db.Model, UserMixin):
-        id = db.Column(db.Integer, primary_key=True)
+        id = db.Column(db.String(30), primary_key=True)
         username = db.Column(db.String(20), unique=True, nullable=False)
         email = db.Column(db.String(30), unique=True, nullable=False)
         image_url = db.Column(db.String(120), nullable=False)
