@@ -2,7 +2,7 @@ from main.models import User, Post, Playlist, Song, load_user
 from main.forms import PostForm
 from main import app,db
 from flask import render_template,jsonify,request,url_for,redirect
-from flask_login import login_user, current_user
+from flask_login import login_user, current_user, logout_user
 
 import spotipy
 from spotipy import oauth2
@@ -12,11 +12,24 @@ SPOTIPY_CLIENT_SECRET = '1cc669adfa30443dbcf25eb52e43dbda'
 SPOTIPY_REDIRECT_URI = 'http://127.0.0.1:80/auth/'
 
 class SpotifyApi():
-    SCOPE = 'user-read-private user-read-email'
-    CACHE = '.spotipyoauthcache'
+
     def __init__(self):
+        self.SCOPE = 'user-read-private user-read-email user-library-read user-top-read playlist-read-private'
+        self.CACHE = '.spotipyoauthcache'
         self.active=None
         self.current_auth = oauth2.SpotifyOAuth( SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET,SPOTIPY_REDIRECT_URI,scope=self.SCOPE,cache_path=self.CACHE )
+    
+    @staticmethod
+    def activate(self,access_token):
+        self.active = spotipy.Spotify(access_token)
+
+    @property
+    def user_playlists(self):
+        playlists=self.active.current_user_playlists(limit=5, offset=0)#limit max 50 need to offset after 50 for next 50
+        for playlist in range(0,len(playlists['items'])):
+            print(f"Playlist {playlist}: {playlists['items'][playlist]['name']}")
+            print(f"Playlist ID {playlist}: {playlists['items'][playlist]['id']}")
+        
 
 
 spotify=SpotifyApi()
@@ -26,6 +39,11 @@ spotify=SpotifyApi()
 def Topic(playlist_id=None):
     if current_user.is_authenticated:
         print("Authenticated user")
+        try:
+            spotify.activate(spotify,current_user.access_token)
+            spotify.user_playlists
+        except:
+            logout_user()
     else:
         print("Non-authenticated user")
     playlists = Playlist.query.all()
@@ -56,16 +74,19 @@ def Auth():
             access_token = token_info['access_token']
         except:
             print("Can not retrieve token")
+            #results = spotify.active.me()
+            #print(results)
             return redirect(url_for('Topic'))
         if access_token:
             try:
-                spotify.active = spotipy.Spotify(access_token)
+                spotify.activate(spotify,access_token)
+                print(request.args.get('next'))
             except:
                 print("Authentication failed")
                 return redirect(url_for('Topic'))
             results = spotify.active.me()
             try:
-                user=User(id=results['id'], username=results['display_name'],email=results['email'],image_url=results['images'][0]['url'])
+                user=User(id=results['id'], username=results['display_name'],email=results['email'],image_url=results['images'][0]['url'],access_token=access_token)
                 try:
                     db.session.add(user)
                     db.session.commit()
@@ -75,6 +96,8 @@ def Auth():
             except:
                 user=load_user(results['id'])
                 login_user(user, remember=True)
+        next_page = request.args.get('next')
+        return redirect('next_page') if next_page else redirect(url_for('Topic'))
 
     return redirect(url_for('Topic'))
 

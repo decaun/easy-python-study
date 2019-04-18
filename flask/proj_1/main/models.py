@@ -4,7 +4,7 @@ db.create_all()
 from main.models import User,Post,Playlist,Song
 
 
-user_1=User(username='Deniz',email='anadndas@demo.com',image_url='test')
+user_1=User(username='Deniz',email='anadndas@demo.com',image_url='test',access_token='access_token')
 db.session.add(user_1)
 db.session.commit()
 user=User.query.get(1)
@@ -71,6 +71,7 @@ class User(db.Model, UserMixin):
         username = db.Column(db.String(20), unique=True, nullable=False)
         email = db.Column(db.String(30), unique=True, nullable=False)
         image_url = db.Column(db.String(120), nullable=False)
+        access_token = db.Column(db.String(330), nullable=False)
         playlist = db.relationship('Playlist', backref='author', lazy=True)
         posts = db.relationship('Post', backref='author', lazy=True)
         
