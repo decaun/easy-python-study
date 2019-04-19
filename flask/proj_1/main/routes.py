@@ -38,30 +38,42 @@ class SpotifyApi():
 
     def update_playlists(self,user_id):
         for playlist in range(0,len(self.playlists['items'])):
-            try:
-                playlist_db=Playlist(spotify_id=self.playlists['items'][playlist]['id'], 
-                                    title=self.playlists['items'][playlist]['name'],
-                                    user_id=user_id)
-                db.session.add(playlist_db)
-                db.session.commit()
-            except Exception as e:
-                print(e)
-                db.session.rollback()
+            playlist_to_db=Playlist(spotify_id=self.playlists['items'][playlist]['id'], 
+                                title=self.playlists['items'][playlist]['name'],
+                                user_id=user_id)
+            playlist_from_db=Playlist.query.filter_by(spotify_id=playlist_to_db.spotify_id,
+                                                    user_id=user_id).first()
+            if playlist_from_db !=None :
+                pass
+            else:
+                try:
+                    print(playlist_to_db.spotify_id)
+                    db.session.add(playlist_to_db)
+                    db.session.commit()
+                except Exception as e:
+                    print(e)
+                    db.session.rollback()
 
 
     def update_songs(self, playlist_id):
         for song in range(0,len(self.songs['items'])):
-            song_db=Song(order=song,
+            song_to_db=Song(order=song,
                         spotify_id=self.songs['items'][song]['track']['id'], 
                         name=self.songs['items'][song]['track']['name'], 
                         album=self.songs['items'][song]['track']['album']['name'],
                         playlist_id=playlist_id)
-            try:    
-                db.session.add(song_db)
-                db.session.commit()
-            except Exception as e:
-                print(e)
-                db.session.rollback()
+            song_from_db=Song.query.filter_by(spotify_id=song_to_db.spotify_id,
+                                                playlist_id=playlist_id,
+                                                order=song).first()
+            if song_from_db!=None:
+                pass
+            else:
+                try:
+                    db.session.add(song_to_db)
+                    db.session.commit()
+                except Exception as e:
+                    print(e)
+                    db.session.rollback()
 
     @property
     def user_playlists(self):
@@ -136,8 +148,8 @@ def Auth():
         except Exception as e:
             print("Can not retrieve token")
             print(e)
-            me = spotify.active.me()
-            print(me)
+            #me = spotify.active.me()
+            #print(me)
             spotify.__init__()
             return redirect(url_for('Topic'))
         if access_token:

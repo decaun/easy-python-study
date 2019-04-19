@@ -86,8 +86,11 @@ class User(db.Model, UserMixin):
 
 
 class Playlist(db.Model):
+        __table_args__ = (
+        db.UniqueConstraint('user_id', 'spotify_id'),
+        )
         id = db.Column(db.Integer, primary_key=True)
-        spotify_id = db.Column(db.String(22), unique=True, nullable=False)
+        spotify_id = db.Column(db.String(22), nullable=False)
         title = db.Column(db.String(100), nullable=False)
         date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
         user_id = db.Column(db.String(30), db.ForeignKey('user.id'), nullable=False)
