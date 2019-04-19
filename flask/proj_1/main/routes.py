@@ -20,7 +20,8 @@ class SpotifyApi():
         self.playlists=None
         self.songs=None
         self.current_auth = oauth2.SpotifyOAuth( SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET,
-                                                SPOTIPY_REDIRECT_URI,scope=self.SCOPE,cache_path=self.CACHE )
+                                                SPOTIPY_REDIRECT_URI,scope=self.SCOPE,
+                                                cache_path=self.CACHE )
     
 
     def activate(self,access_token):
@@ -32,7 +33,8 @@ class SpotifyApi():
     def call_songs(self, user_id, spotify_playlist_id, 
                     current=0, next=5):
         self.songs=self.active.user_playlist_tracks(user_id, playlist_id=spotify_playlist_id, 
-                                                    fields=None, limit=next, offset=current, market=None)#limit max 100 need to offset after 100 for next 100
+                                                    fields=None, limit=next, offset=current, 
+                                                    market=None)#limit max 100 need to offset after 100 for next 100
 
     def update_playlists(self,user_id):
         for playlist in range(0,len(self.playlists['items'])):
@@ -115,8 +117,6 @@ def Topic(playlist_id=None):
 def Login():
     try:
         me = spotify.active.me()
-        
-        
         real_user=User.query.filter_by(spotify_id=me['id']).first()
         user=load_user(real_user.id)
         spotify.activate(user.access_token)
@@ -138,13 +138,14 @@ def Auth():
             print(e)
             me = spotify.active.me()
             print(me)
+            spotify.__init__()
             return redirect(url_for('Topic'))
         if access_token:
             try:
                 spotify.activate(access_token)
-                print(request.args.get('next'))
             except:
                 print("Authentication failed")
+                logout_user()
                 return redirect(url_for('Topic'))
             me = spotify.active.me()
             try:
@@ -154,11 +155,12 @@ def Auth():
                     real_user.access_token=access_token
                     db.session.commit()
                 except Exception as e:
+                    db.session.rollback()
                     db.session.add(user)
                     db.session.commit()
                     print(e)
                     
-                login_user(user, remember=True)
+                login_user(current_user, remember=True)
             except:
                 real_user=User.query.filter_by(spotify_id=me['id']).first()
                 user=load_user(real_user.id)
