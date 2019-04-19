@@ -19,36 +19,39 @@ class SpotifyApi():
         self.active=None
         self.playlists=None
         self.songs=None
-        self.current_auth = oauth2.SpotifyOAuth( SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET,SPOTIPY_REDIRECT_URI,scope=self.SCOPE,cache_path=self.CACHE )
+        self.current_auth = oauth2.SpotifyOAuth( SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET,
+                                                SPOTIPY_REDIRECT_URI,scope=self.SCOPE,cache_path=self.CACHE )
     
-    @staticmethod
+
     def activate(self,access_token):
         self.active = spotipy.Spotify(access_token)
 
-    @staticmethod
     def call_playlists(self, current=0, next=5):
        self.playlists=self.active.current_user_playlists(limit=next, offset=current)#limit max 50 need to offset after 50 for next 50
 
-    @staticmethod
-    def call_songs(self, user_id, spotify_playlist_id, current=0, next=5):
-        self.songs=self.active.user_playlist_tracks(user_id, playlist_id=spotify_playlist_id, fields=None, limit=next, offset=current, market=None)#limit max 100 need to offset after 100 for next 100
+    def call_songs(self, user_id, spotify_playlist_id, 
+                    current=0, next=5):
+        self.songs=self.active.user_playlist_tracks(user_id, playlist_id=spotify_playlist_id, 
+                                                    fields=None, limit=next, offset=current, market=None)#limit max 100 need to offset after 100 for next 100
 
-
-    @staticmethod
     def update_playlists(self,user_id):
         for playlist in range(0,len(self.playlists['items'])):
             try:
-                playlist_db=Playlist(spotify_id=self.playlists['items'][playlist]['id'], title=self.playlists['items'][playlist]['name'],user_id=user_id)
+                playlist_db=Playlist(spotify_id=self.playlists['items'][playlist]['id'], 
+                                    title=self.playlists['items'][playlist]['name'],user_id=user_id)
                 db.session.add(playlist_db)
                 db.session.commit()
             except Exception as e:
                 print(e)
                 db.session.rollback()
 
-    @staticmethod
+
     def update_songs(self, playlist_id):
         for song in range(0,len(self.songs['items'])):
-            song_db=Song(spotify_id=self.songs['items'][song]['track']['id'], name=self.songs['items'][song]['track']['name'], album=self.songs['items'][song]['track']['album']['name'],playlist_id=playlist_id)
+            song_db=Song(spotify_id=self.songs['items'][song]['track']['id'], 
+                        name=self.songs['items'][song]['track']['name'], 
+                        album=self.songs['items'][song]['track']['album']['name'],
+                        playlist_id=playlist_id)
             try:    
                 db.session.add(song_db)
                 db.session.commit()
@@ -72,15 +75,16 @@ def Topic(playlist_id=None):
     if current_user.is_authenticated:
         print("Authenticated user")
         try:
-            spotify.activate(spotify,current_user.access_token)
+            spotify.activate(current_user.access_token)
             me = spotify.active.me()#without this logout is not working properly. (verification for api access needed here)
         except Exception as e:
             print(e)
             logout_user()
 
         try:
-            spotify.call_playlists(spotify, current=0, next=50)
-            spotify.update_playlists(spotify,me['id'])
+            spotify.call_playlists(current=0, next=50)
+            spotify.update_playlists(me['id'])
+            pass
         except Exception as e:
             #print(e)
             pass
@@ -93,9 +97,9 @@ def Topic(playlist_id=None):
     else:
         playlist_selected=Playlist.query.get(playlist_id)
         if current_user.is_authenticated:
-            spotify.call_songs(spotify,me['id'],playlist_selected.spotify_id, current=0, next=50)
+            spotify.call_songs(me['id'],playlist_selected.spotify_id, current=0, next=50)
         #    print(spotify.songs)
-            spotify.update_songs(spotify,playlist_id)
+            spotify.update_songs(playlist_id)
     posts = playlist_selected.posts
     form = PostForm()
     if form.validate_on_submit():
@@ -113,7 +117,7 @@ def Login():
         
         real_user=User.query.filter_by(spotify_id=me['id']).first()
         user=load_user(real_user.id)
-        spotify.activate(spotify,user.access_token)
+        spotify.activate(user.access_token)
         login_user(user, remember=True)
         return redirect(url_for('Topic'))
     except:
@@ -135,7 +139,7 @@ def Auth():
             return redirect(url_for('Topic'))
         if access_token:
             try:
-                spotify.activate(spotify,access_token)
+                spotify.activate(access_token)
                 print(request.args.get('next'))
             except:
                 print("Authentication failed")
