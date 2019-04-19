@@ -19,6 +19,7 @@ class SpotifyApi():
         self.active=None
         self.playlists=None
         self.songs=None
+        self.features=None
         self.current_auth = oauth2.SpotifyOAuth( SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET,
                                                 SPOTIPY_REDIRECT_URI,scope=self.SCOPE,
                                                 cache_path=self.CACHE )
@@ -55,12 +56,30 @@ class SpotifyApi():
 
 
     def update_songs(self, playlist_id):
+        list_of_tracks=[]
         for song in range(0,len(self.songs['items'])):
-            song_to_db=Song(order=song,
-                        spotify_id=self.songs['items'][song]['track']['id'], 
-                        name=self.songs['items'][song]['track']['name'], 
-                        album=self.songs['items'][song]['track']['album']['name'],
-                        playlist_id=playlist_id)
+            list_of_tracks.append(str(self.songs['items'][song]['track']['id']))
+        self.features=self.active.audio_features(tracks = list_of_tracks)
+        for song in range(0,len(self.songs['items'])):
+            song_to_db=Song(order = song,
+                        spotify_id = self.songs['items'][song]['track']['id'], 
+                        name = self.songs['items'][song]['track']['name'], 
+                        album = self.songs['items'][song]['track']['album']['name'],
+                        playlist_id = playlist_id,
+                        danceability = self.features[song]['danceability'],
+                        energy = self.features[song]['energy'],
+                        key = self.features[song]['key'],
+                        mode = self.features[song]['mode'],
+                        speechiness = self.features[song]['speechiness'],
+                        acousticness =self.features[song]['acousticness'],
+                        instrumentalness =self.features[song]['instrumentalness'],
+                        liveness = self.features[song]['liveness'],
+                        valence = self.features[song]['valence'],
+                        tempo = self.features[song]['tempo'],
+                        uri = self.features[song]['uri'],
+                        time_signature = self.features[song]['time_signature'])
+            
+
             song_from_db=Song.query.filter_by(spotify_id=song_to_db.spotify_id,
                                                 playlist_id=playlist_id).first()
             if song_from_db!=None:
@@ -68,7 +87,7 @@ class SpotifyApi():
                                                 order=song).first()
                 if song_from_db!=None:
                     if song_from_db.spotify_id!=song_to_db.spotify_id:
-                        #if there is difference at song orders or different songs added etc. here i delete rest of rows bellow!!!
+                        #if there is difference at song orders or different songs added etc. here i delete rest of rows bellow (> asc order)!!!
                         try:
                             Song.query.filter(Song.id >= song_from_db.id).delete()
                             db.session.commit()
@@ -78,7 +97,6 @@ class SpotifyApi():
                             print(e)
                             db.session.rollback()
             else:
-
                 try:
                     db.session.add(song_to_db)
                     db.session.commit()

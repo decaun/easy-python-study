@@ -6,6 +6,11 @@
                 <tr>
                     <th scope="col">Name</th>
                     <th scope="col">Album</th>
+                    <th scope="col">Danceability</th>
+                    <th scope="col">Energy</th>
+                    <th scope="col">Key</th>
+                    <th scope="col">Tempo</th>
+                    <th scope="col">Time Signature</th>
                 </tr>
             </thead>
                 <tbody>
@@ -13,6 +18,11 @@
                     <tr>
                         <td>{{song.name}}</td>
                         <td>{{song.album}}</td>
+                        <td>{{song.danceability}}</td>
+                        <td>{{song.energy}}</td>
+                        <td>{{song.key}}</td>
+                        <td>{{song.tempo}}</td>
+                        <td>{{song.time_signature}}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

@@ -124,7 +124,19 @@ class Song(db.Model):
         album = db.Column(db.String(100), nullable=False)
         posts = db.relationship('Post', backref='song', lazy=True)
         playlist_id = db.Column(db.Integer, db.ForeignKey('playlist.id'), nullable=False)
-        
+
+        danceability = db.Column(db.Float)
+        energy = db.Column(db.Float)
+        key = db.Column(db.Integer)
+        mode = db.Column(db.Integer)
+        speechiness = db.Column(db.Float)
+        acousticness = db.Column(db.Float)
+        instrumentalness = db.Column(db.Float)
+        liveness = db.Column(db.Float)
+        valence = db.Column(db.Float)
+        tempo = db.Column(db.Float)
+        uri = db.Column(db.String(36))
+        time_signature = db.Column(db.Integer)
 
         def __repr__(self):
             return f"Song('{self.name}', '{self.album}')"
