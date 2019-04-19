@@ -14,7 +14,7 @@ db.session.add(playlist_1)
 db.session.commit()
 playlist=Playlist.query.get(1)
 
-song_1=Song(order=1, spotify_id='1', name='Song 1',album='album 1',playlist_id=playlist.id)
+song_1=Song(order=1, spotify_id='1',artist='1',popularity='1', name='Song 1',album='album 1',playlist_id=playlist.id)
 db.session.add(song_1)
 db.session.commit()
 song=Song.query.get(1)
@@ -122,6 +122,8 @@ class Song(db.Model):
         spotify_id = db.Column(db.String(22), nullable=False)
         name = db.Column(db.String(100), nullable=False)
         album = db.Column(db.String(100), nullable=False)
+        artist = db.Column(db.String(100), nullable=False)
+        popularity = db.Column(db.Integer, nullable=False)
         posts = db.relationship('Post', backref='song', lazy=True)
         playlist_id = db.Column(db.Integer, db.ForeignKey('playlist.id'), nullable=False)
 
@@ -137,6 +139,7 @@ class Song(db.Model):
         tempo = db.Column(db.Float)
         uri = db.Column(db.String(36))
         time_signature = db.Column(db.Integer)
+        
 
         def __repr__(self):
             return f"Song('{self.name}', '{self.album}')"

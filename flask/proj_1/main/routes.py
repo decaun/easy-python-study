@@ -65,6 +65,8 @@ class SpotifyApi():
                         spotify_id = self.songs['items'][song]['track']['id'], 
                         name = self.songs['items'][song]['track']['name'], 
                         album = self.songs['items'][song]['track']['album']['name'],
+                        artist = self.songs['items'][song]['track']['album']['artists'][0]['name'],
+                        popularity = self.songs['items'][song]['track']['popularity'],
                         playlist_id = playlist_id,
                         danceability = self.features[song]['danceability'],
                         energy = self.features[song]['energy'],
