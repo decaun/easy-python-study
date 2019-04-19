@@ -30,15 +30,15 @@ class SpotifyApi():
        self.playlists=self.active.current_user_playlists(limit=next, offset=current)#limit max 50 need to offset after 50 for next 50
 
     @staticmethod
-    def call_songs(self, user_id, playlist_id, current=0, next=5):
-        self.songs=self.active.user_playlist_tracks(user_id, playlist_id=playlist_id, fields=None, limit=next, offset=current, market=None)#limit max 100 need to offset after 100 for next 100
+    def call_songs(self, user_id, spotify_playlist_id, current=0, next=5):
+        self.songs=self.active.user_playlist_tracks(user_id, playlist_id=spotify_playlist_id, fields=None, limit=next, offset=current, market=None)#limit max 100 need to offset after 100 for next 100
 
 
     @staticmethod
     def update_playlists(self,user_id):
         for playlist in range(0,len(self.playlists['items'])):
             try:
-                playlist_db=Playlist(id=self.playlists['items'][playlist]['id'], title=self.playlists['items'][playlist]['name'],user_id=user_id)
+                playlist_db=Playlist(spotify_id=self.playlists['items'][playlist]['id'], title=self.playlists['items'][playlist]['name'],user_id=user_id)
                 db.session.add(playlist_db)
                 db.session.commit()
             except Exception as e:
@@ -46,9 +46,9 @@ class SpotifyApi():
                 db.session.rollback()
 
     @staticmethod
-    def update_songs(self, user_id, playlist_id):
+    def update_songs(self, playlist_id):
         for song in range(0,len(self.songs['items'])):
-            song_db=Song(id=self.songs['items'][song]['track']['name'], name=self.songs['items'][song]['track']['name'], album=self.songs['items'][song]['track']['name'],playlist_id=playlist_id)
+            song_db=Song(spotify_id=self.songs['items'][song]['track']['id'], name=self.songs['items'][song]['track']['name'], album=self.songs['items'][song]['track']['album']['name'],playlist_id=playlist_id)
             try:    
                 db.session.add(song_db)
                 db.session.commit()
@@ -67,7 +67,7 @@ class SpotifyApi():
 spotify=SpotifyApi()
 
 @app.route('/', methods = ['GET', 'POST'])
-@app.route('/<string:playlist_id>', methods = ['GET', 'POST'])
+@app.route('/<int:playlist_id>', methods = ['GET', 'POST'])
 def Topic(playlist_id=None):
     if current_user.is_authenticated:
         print("Authenticated user")
@@ -80,10 +80,9 @@ def Topic(playlist_id=None):
 
         try:
             spotify.call_playlists(spotify, current=0, next=50)
-            #spotify.update_playlists(spotify,me['id'])
-            pass
+            spotify.update_playlists(spotify,me['id'])
         except Exception as e:
-            print(e)
+            #print(e)
             pass
     else:
         print("Non-authenticated user")
@@ -92,9 +91,11 @@ def Topic(playlist_id=None):
         #playlist_selected = Playlist.query.get(1)
         playlist_selected = Playlist.query.first()
     else:
-        spotify.call_songs(spotify,me['id'],playlist_id, current=0, next=50)
-        #spotify.update_songs(spotify,me['id'],playlist_id)
-        playlist_selected=Playlist.query.get_or_404(playlist_id)
+        playlist_selected=Playlist.query.get(playlist_id)
+        if current_user.is_authenticated:
+            spotify.call_songs(spotify,me['id'],playlist_selected.spotify_id, current=0, next=50)
+        #    print(spotify.songs)
+            spotify.update_songs(spotify,playlist_id)
     posts = playlist_selected.posts
     form = PostForm()
     if form.validate_on_submit():
@@ -108,7 +109,10 @@ def Topic(playlist_id=None):
 def Login():
     try:
         me = spotify.active.me()
-        user=load_user(me['id'])
+        
+        
+        real_user=User.query.filter_by(spotify_id=me['id']).first()
+        user=load_user(real_user.id)
         spotify.activate(spotify,user.access_token)
         login_user(user, remember=True)
         return redirect(url_for('Topic'))
@@ -126,8 +130,8 @@ def Auth():
         except Exception as e:
             print("Can not retrieve token")
             print(e)
-            #me = spotify.active.me()
-            #print(me)
+            me = spotify.active.me()
+            print(me)
             return redirect(url_for('Topic'))
         if access_token:
             try:
@@ -138,10 +142,10 @@ def Auth():
                 return redirect(url_for('Topic'))
             me = spotify.active.me()
             try:
-                user=User(id=me['id'], username=me['display_name'],email=me['email'],image_url=me['images'][0]['url'],access_token=access_token)
+                user=User(spotify_id=me['id'], username=me['display_name'],email=me['email'],image_url=me['images'][0]['url'],access_token=access_token)
                 try:
-                    user_from_db=load_user(me['id'])
-                    user_from_db.access_token=access_token
+                    real_user=User.query.filter_by(spotify_id=me['id']).first()
+                    real_user.access_token=access_token
                     db.session.commit()
                 except Exception as e:
                     db.session.add(user)
@@ -150,7 +154,8 @@ def Auth():
                     
                 login_user(user, remember=True)
             except:
-                user=load_user(me['id'])
+                real_user=User.query.filter_by(spotify_id=me['id']).first()
+                user=load_user(real_user.id)
                 login_user(user, remember=True)
         next_page = request.args.get('next')
         return redirect('next_page') if next_page else redirect(url_for('Topic'))
