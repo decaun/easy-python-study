@@ -9,12 +9,12 @@ db.session.add(user_1)
 db.session.commit()
 user=User.query.get(1)
 
-playlist_1=Playlist(title='Playlist 1',user_id=user.id)
+playlist_1=Playlist(id='1', title='Playlist 1',user_id=user.id)
 db.session.add(playlist_1)
 db.session.commit()
 playlist=Playlist.query.get(1)
 
-song_1=Song(name='Song 1',album='album 1',playlist_id=playlist.id)
+song_1=Song(id='1', name='Song 1',album='album 1',playlist_id=playlist.id)
 db.session.add(song_1)
 db.session.commit()
 song=Song.query.get(1)
@@ -82,7 +82,7 @@ class User(db.Model, UserMixin):
 
 
 class Playlist(db.Model):
-        id = db.Column(db.Integer, primary_key=True)
+        id = db.Column(db.String(22), primary_key=True)
         title = db.Column(db.String(100), nullable=False)
         date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
         user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -106,7 +106,7 @@ class Post(db.Model):
             return f"Post('{self.title}', '{self.date_posted}')"
 
 class Song(db.Model):
-        id = db.Column(db.Integer, primary_key=True)
+        id = db.Column(db.String(22), primary_key=True)
         name = db.Column(db.String(100), nullable=False)
         album = db.Column(db.String(100), nullable=False)
         posts = db.relationship('Post', backref='song', lazy=True)

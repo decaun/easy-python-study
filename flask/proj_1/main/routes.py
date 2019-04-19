@@ -14,14 +14,47 @@ SPOTIPY_REDIRECT_URI = 'http://127.0.0.1:80/auth/'
 class SpotifyApi():
 
     def __init__(self):
-        self.SCOPE = 'user-read-private user-read-email user-library-read user-top-read playlist-read-private'
+        self.SCOPE = 'user-read-private user-read-email user-library-read user-top-read playlist-read-private playlist-read-collaborative'
         self.CACHE = '.spotipyoauthcache'
         self.active=None
+        self.playlists=None
+        self.songs=None
         self.current_auth = oauth2.SpotifyOAuth( SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET,SPOTIPY_REDIRECT_URI,scope=self.SCOPE,cache_path=self.CACHE )
     
     @staticmethod
     def activate(self,access_token):
         self.active = spotipy.Spotify(access_token)
+
+    @staticmethod
+    def call_playlists(self, current=0, next=5):
+       self.playlists=self.active.current_user_playlists(limit=next, offset=current)#limit max 50 need to offset after 50 for next 50
+
+    @staticmethod
+    def call_songs(self, user_id, playlist_id, current=0, next=5):
+        self.songs=self.active.user_playlist_tracks(user_id, playlist_id=playlist_id, fields=None, limit=next, offset=current, market=None)#limit max 100 need to offset after 100 for next 100
+
+
+    @staticmethod
+    def update_playlists(self,user_id):
+        for playlist in range(0,len(self.playlists['items'])):
+            try:
+                playlist_db=Playlist(id=self.playlists['items'][playlist]['id'], title=self.playlists['items'][playlist]['name'],user_id=user_id)
+                db.session.add(playlist_db)
+                db.session.commit()
+            except Exception as e:
+                print(e)
+                db.session.rollback()
+
+    @staticmethod
+    def update_songs(self, user_id, playlist_id):
+        for song in range(0,len(self.songs['items'])):
+            song_db=Song(id=self.songs['items'][song]['track']['name'], name=self.songs['items'][song]['track']['name'], album=self.songs['items'][song]['track']['name'],playlist_id=playlist_id)
+            try:    
+                db.session.add(song_db)
+                db.session.commit()
+            except Exception as e:
+                print(e)
+                db.session.rollback()
 
     @property
     def user_playlists(self):
@@ -30,8 +63,6 @@ class SpotifyApi():
             print(f"Playlist {playlist}: {playlists['items'][playlist]['name']}")
             print(f"Playlist ID {playlist}: {playlists['items'][playlist]['id']}")
         print(f"All total: {playlists['total']}")
-        
-
 
 spotify=SpotifyApi()
 
@@ -42,9 +73,18 @@ def Topic(playlist_id=None):
         print("Authenticated user")
         try:
             spotify.activate(spotify,current_user.access_token)
-            spotify.user_playlists
-        except:
+            me = spotify.active.me()#without this logout is not working properly. (verification for api access needed here)
+        except Exception as e:
+            print(e)
             logout_user()
+
+        try:
+            #spotify.iterate_playlists(spotify, current=0, next=50)
+            #spotify.update_playlists(spotify,me['id'])
+            pass
+        except Exception as e:
+            print(e)
+            pass
     else:
         print("Non-authenticated user")
     playlists = Playlist.query.all()
@@ -59,14 +99,13 @@ def Topic(playlist_id=None):
         db.session.add(post)
         db.session.commit()
         return redirect(url_for('Topic', playlist_id=playlist_selected.id))
-    return render_template('home.html',posts = posts,form=form, playlists = playlists,playlist_selected = playlist_selected, legend = 'New Post')
+    return render_template('home.html',posts = posts,form=form, playlists = playlists,playlist_selected = playlist_selected, spotify=spotify, legend = 'New Post')
 
 @app.route('/login')
 def Login():
     try:
-        
-        results = spotify.active.me()
-        user=load_user(results['id'])
+        me = spotify.active.me()
+        user=load_user(me['id'])
         spotify.activate(spotify,user.access_token)
         login_user(user, remember=True)
         return redirect(url_for('Topic'))
@@ -75,7 +114,6 @@ def Login():
 
 @app.route('/auth/',methods=['GET'])
 def Auth():
-    
     if request.method == 'GET':
         try:
             code = str(request.args['code'])
@@ -85,8 +123,8 @@ def Auth():
         except Exception as e:
             print("Can not retrieve token")
             print(e)
-            #results = spotify.active.me()
-            #print(results)
+            #me = spotify.active.me()
+            #print(me)
             return redirect(url_for('Topic'))
         if access_token:
             try:
@@ -95,17 +133,21 @@ def Auth():
             except:
                 print("Authentication failed")
                 return redirect(url_for('Topic'))
-            results = spotify.active.me()
+            me = spotify.active.me()
             try:
-                user=User(id=results['id'], username=results['display_name'],email=results['email'],image_url=results['images'][0]['url'],access_token=access_token)
+                user=User(id=me['id'], username=me['display_name'],email=me['email'],image_url=me['images'][0]['url'],access_token=access_token)
                 try:
+                    user_from_db=load_user(me['id'])
+                    user_from_db.access_token=access_token
+                    db.session.commit()
+                except Exception as e:
                     db.session.add(user)
                     db.session.commit()
-                except:
-                    db.session.rollback()
+                    print(e)
+                    
                 login_user(user, remember=True)
             except:
-                user=load_user(results['id'])
+                user=load_user(me['id'])
                 login_user(user, remember=True)
         next_page = request.args.get('next')
         return redirect('next_page') if next_page else redirect(url_for('Topic'))
