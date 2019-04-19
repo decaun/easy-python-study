@@ -43,11 +43,10 @@ class SpotifyApi():
                                 user_id=user_id)
             playlist_from_db=Playlist.query.filter_by(spotify_id=playlist_to_db.spotify_id,
                                                     user_id=user_id).first()
-            if playlist_from_db !=None :
+            if playlist_from_db!=None:
                 pass
             else:
                 try:
-                    print(playlist_to_db.spotify_id)
                     db.session.add(playlist_to_db)
                     db.session.commit()
                 except Exception as e:
@@ -63,11 +62,23 @@ class SpotifyApi():
                         album=self.songs['items'][song]['track']['album']['name'],
                         playlist_id=playlist_id)
             song_from_db=Song.query.filter_by(spotify_id=song_to_db.spotify_id,
-                                                playlist_id=playlist_id,
-                                                order=song).first()
+                                                playlist_id=playlist_id).first()
             if song_from_db!=None:
-                pass
+                song_from_db=Song.query.filter_by(playlist_id=playlist_id,
+                                                order=song).first()
+                if song_from_db!=None:
+                    if song_from_db.spotify_id!=song_to_db.spotify_id:
+                        #if there is difference at song orders or different songs added etc. here i delete rest of rows bellow!!!
+                        try:
+                            Song.query.filter(Song.id >= song_from_db.id).delete()
+                            db.session.commit()
+                            db.session.add(song_to_db)
+                            db.session.commit()
+                        except Exception as e:
+                            print(e)
+                            db.session.rollback()
             else:
+
                 try:
                     db.session.add(song_to_db)
                     db.session.commit()
@@ -176,7 +187,7 @@ def Auth():
             except:
                 real_user=User.query.filter_by(spotify_id=me['id']).first()
                 user=load_user(real_user.id)
-                login_user(user, remember=True)
+        login_user(user, remember=True)
         next_page = request.args.get('next')
         return redirect('next_page') if next_page else redirect(url_for('Topic'))
 
