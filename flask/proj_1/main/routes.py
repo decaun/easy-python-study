@@ -38,7 +38,8 @@ class SpotifyApi():
         for playlist in range(0,len(self.playlists['items'])):
             try:
                 playlist_db=Playlist(spotify_id=self.playlists['items'][playlist]['id'], 
-                                    title=self.playlists['items'][playlist]['name'],user_id=user_id)
+                                    title=self.playlists['items'][playlist]['name'],
+                                    user_id=user_id)
                 db.session.add(playlist_db)
                 db.session.commit()
             except Exception as e:
@@ -48,7 +49,8 @@ class SpotifyApi():
 
     def update_songs(self, playlist_id):
         for song in range(0,len(self.songs['items'])):
-            song_db=Song(spotify_id=self.songs['items'][song]['track']['id'], 
+            song_db=Song(order=song,
+                        spotify_id=self.songs['items'][song]['track']['id'], 
                         name=self.songs['items'][song]['track']['name'], 
                         album=self.songs['items'][song]['track']['album']['name'],
                         playlist_id=playlist_id)

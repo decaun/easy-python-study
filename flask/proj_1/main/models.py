@@ -14,12 +14,12 @@ db.session.add(playlist_1)
 db.session.commit()
 playlist=Playlist.query.get(1)
 
-song_1=Song(spotify_id='1', name='Song 1',album='album 1',playlist_id=playlist.id)
+song_1=Song(order=1, spotify_id='1', name='Song 1',album='album 1',playlist_id=playlist.id)
 db.session.add(song_1)
 db.session.commit()
 song=Song.query.get(1)
 
-song_2=Song(spotify_id='2',name='Song 2',album='album 1',playlist_id=playlist.id)
+song_2=Song(order=1, spotify_id='2',name='Song 2',album='album 1',playlist_id=playlist.id)
 db.session.add(song_2)
 db.session.commit()
 song2=Song.query.get(2)
@@ -111,12 +111,17 @@ class Post(db.Model):
             return f"Post('{self.title}', '{self.date_posted}')"
 
 class Song(db.Model):
+        __table_args__ = (
+        db.UniqueConstraint('order', 'spotify_id', 'playlist_id'),
+        )
         id = db.Column(db.Integer, primary_key=True)
-        spotify_id = db.Column(db.String(22), unique=False, nullable=False)
+        order = db.Column(db.Integer, nullable=False)
+        spotify_id = db.Column(db.String(22), nullable=False)
         name = db.Column(db.String(100), nullable=False)
         album = db.Column(db.String(100), nullable=False)
         posts = db.relationship('Post', backref='song', lazy=True)
         playlist_id = db.Column(db.Integer, db.ForeignKey('playlist.id'), nullable=False)
+        
 
         def __repr__(self):
             return f"Song('{self.name}', '{self.album}')"
