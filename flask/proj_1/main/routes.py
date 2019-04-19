@@ -67,7 +67,7 @@ class SpotifyApi():
 spotify=SpotifyApi()
 
 @app.route('/', methods = ['GET', 'POST'])
-@app.route('/<int:playlist_id>', methods = ['GET', 'POST'])
+@app.route('/<string:playlist_id>', methods = ['GET', 'POST'])
 def Topic(playlist_id=None):
     if current_user.is_authenticated:
         print("Authenticated user")
@@ -79,7 +79,7 @@ def Topic(playlist_id=None):
             logout_user()
 
         try:
-            #spotify.iterate_playlists(spotify, current=0, next=50)
+            spotify.call_playlists(spotify, current=0, next=50)
             #spotify.update_playlists(spotify,me['id'])
             pass
         except Exception as e:
@@ -89,8 +89,11 @@ def Topic(playlist_id=None):
         print("Non-authenticated user")
     playlists = Playlist.query.all()
     if playlist_id==None:
-        playlist_selected = Playlist.query.get(1)
+        #playlist_selected = Playlist.query.get(1)
+        playlist_selected = Playlist.query.first()
     else:
+        spotify.call_songs(spotify,me['id'],playlist_id, current=0, next=50)
+        #spotify.update_songs(spotify,me['id'],playlist_id)
         playlist_selected=Playlist.query.get_or_404(playlist_id)
     posts = playlist_selected.posts
     form = PostForm()

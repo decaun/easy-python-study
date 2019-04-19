@@ -85,7 +85,7 @@ class Playlist(db.Model):
         id = db.Column(db.String(22), primary_key=True)
         title = db.Column(db.String(100), nullable=False)
         date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-        user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+        user_id = db.Column(db.String(30), db.ForeignKey('user.id'), nullable=False)
         posts = db.relationship('Post', backref='topic', lazy=True)
         songs = db.relationship('Song', backref='topic', lazy=True)
 
@@ -98,9 +98,9 @@ class Post(db.Model):
         title = db.Column(db.String(100), nullable=False)
         date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
         content = db.Column(db.Text, nullable=False)
-        user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-        song_id = db.Column(db.Integer, db.ForeignKey('song.id'), nullable=True)
-        playlist_id = db.Column(db.Integer, db.ForeignKey('playlist.id'), nullable=False)
+        user_id = db.Column(db.String(22), db.ForeignKey('user.id'), nullable=False)
+        song_id = db.Column(db.String(22), db.ForeignKey('song.id'), nullable=True)
+        playlist_id = db.Column(db.String(22), db.ForeignKey('playlist.id'), nullable=False)
 
         def __repr__(self):
             return f"Post('{self.title}', '{self.date_posted}')"
@@ -110,7 +110,7 @@ class Song(db.Model):
         name = db.Column(db.String(100), nullable=False)
         album = db.Column(db.String(100), nullable=False)
         posts = db.relationship('Post', backref='song', lazy=True)
-        playlist_id = db.Column(db.Integer, db.ForeignKey('playlist.id'), nullable=False)
+        playlist_id = db.Column(db.String(22), db.ForeignKey('playlist.id'), nullable=False)
 
         def __repr__(self):
             return f"Song('{self.name}', '{self.album}')"
