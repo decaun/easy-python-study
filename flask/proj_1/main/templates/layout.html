@@ -69,11 +69,18 @@
                     <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
                     <div class="list-group">
                         {% for playlist in playlists %}
-                        <a href="/{{ playlist.id }}" class="list-group-item list-group-item-action {% if playlist.id == playlist_selected.id %}text-light bg-dark{% endif %} ">{{ playlist.title }}
-                            <div class="badge badge-primary text-wrap  {% if playlist.id == playlist_selected.id %}text-dark bg-light{% else %}text-light bg-dark{% endif %} "" style="width: auto;">#default</div>
+                        <a href="/{{ playlist.id }}" class="list-group-item list-group-item-action {% if playlist.id == playlist_selected.id %}text-light bg-dark{% endif %}">{{ playlist.title }}
+                            <div class="badge badge-primary text-wrap  {% if playlist.id == playlist_selected.id %}text-dark bg-light{% else %}text-light bg-dark{% endif %}" style="width: auto;">#default</div>
                         </a>
                         
                         {% endfor %}
+                            {% if current_user.is_authenticated %}
+                            {% for playlist in range(0,spotify.playlists['items']|length) %}
+                            <a href="#" onclick="return false;" class="list-group-item list-group-item-action {% if playlist.id == playlist_selected.id %}text-light bg-dark{% endif %}">{{ spotify.playlists['items'][playlist]['name'] }}
+                                <div class="badge badge-primary text-wrap  {% if playlist.id == playlist_selected.id %}text-dark bg-light{% else %}text-light bg-dark{% endif %}" style="width: auto;">#default</div>
+                            </a>
+                            {% endfor %}
+                        {% endif %}
                         
                     </div>
                 </div>
