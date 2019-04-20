@@ -15,7 +15,7 @@ class SpotifyApi():
 
     def __init__(self):
         self.SCOPE = 'user-read-private user-read-email user-library-read user-top-read playlist-read-private playlist-read-collaborative'
-        self.CACHE = '.spotipyoauthcache'
+        self.CACHE = None#'.spotipyoauthcache' if disabled no cache generated at backend ( no cache needed if you store token at DB == no cache management :) )
         self.active=None
         self.playlists=None
         self.songs=None
@@ -179,7 +179,6 @@ def Auth():
         except Exception as e:
             print("Can not retrieve token")
             print(e)
-            print("hook 1")
             me = spotify.active.me()
             spotify.__init__()
             return redirect(url_for('Topic'))
@@ -190,17 +189,14 @@ def Auth():
                 print("Authentication failed")
                 logout_user()
                 return redirect(url_for('Topic'))
-                print("hook 2")
-                
             me = spotify.active.me()
-            user=User(spotify_id=me['id'], username=me['display_name'],email=me['email'],image_url=me['images'][0]['url'],access_token=access_token)
-                
             try:
                 real_user=User.query.filter_by(spotify_id=me['id']).first()
                 real_user.access_token=access_token
                 db.session.commit()
                 login_user(real_user, remember=True)
             except Exception as e:
+                user=User(spotify_id=me['id'], username=me['display_name'],email=me['email'],image_url=me['images'][0]['url'],access_token=access_token)
                 db.session.rollback()
                 db.session.add(user)
                 db.session.commit()
