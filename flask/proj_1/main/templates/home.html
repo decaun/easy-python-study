@@ -1,8 +1,10 @@
 {% extends "layout.html" %}
 {% block playlist_block %}
-    <table class="table">
+
+<div class="table-responsive">
+    <table class="table rounded table-striped table-dark table-hover">
         <caption>List of users</caption>
-            <thead>
+            <thead class="rounded thead-light">
                 <tr>
                     <th scope="col">Name</th>
                     <th scope="col">Album</th>
@@ -31,6 +33,7 @@
                     {% endfor %}
                 </tbody>
     </table>
+</div>
 {% endblock playlist_block %}
 {% block create_comment %}
 <div class="content-section">
