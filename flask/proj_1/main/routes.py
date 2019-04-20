@@ -179,8 +179,8 @@ def Auth():
         except Exception as e:
             print("Can not retrieve token")
             print(e)
-            #me = spotify.active.me()
-            #print(me)
+            print("hook 1")
+            me = spotify.active.me()
             spotify.__init__()
             return redirect(url_for('Topic'))
         if access_token:
@@ -190,26 +190,24 @@ def Auth():
                 print("Authentication failed")
                 logout_user()
                 return redirect(url_for('Topic'))
+                print("hook 2")
+                
             me = spotify.active.me()
+            user=User(spotify_id=me['id'], username=me['display_name'],email=me['email'],image_url=me['images'][0]['url'],access_token=access_token)
+                
             try:
-                user=User(spotify_id=me['id'], username=me['display_name'],email=me['email'],image_url=me['images'][0]['url'],access_token=access_token)
-                try:
-                    real_user=User.query.filter_by(spotify_id=me['id']).first()
-                    real_user.access_token=access_token
-                    db.session.commit()
-                except Exception as e:
-                    db.session.rollback()
-                    db.session.add(user)
-                    db.session.commit()
-                    print(e)
-                    
-                login_user(current_user, remember=True)
-            except:
                 real_user=User.query.filter_by(spotify_id=me['id']).first()
-                user=load_user(real_user.id)
-        login_user(user, remember=True)
-        next_page = request.args.get('next')
-        return redirect('next_page') if next_page else redirect(url_for('Topic'))
+                real_user.access_token=access_token
+                db.session.commit()
+                login_user(real_user, remember=True)
+            except Exception as e:
+                db.session.rollback()
+                db.session.add(user)
+                db.session.commit()
+                login_user(user, remember=True)
+            
+        #next_page = request.args.get('next')
+        #return redirect('next_page') if next_page else redirect(url_for('Topic'))
 
     return redirect(url_for('Topic'))
 

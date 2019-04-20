@@ -67,6 +67,7 @@ def load_user(user_id):
     try:
         return User.query.get(int(user_id))
     except:
+        print("user id not found")
         return None
 
 class User(db.Model, UserMixin):
