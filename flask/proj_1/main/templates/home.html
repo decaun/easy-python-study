@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block playlist_block %}
-
-    <table class="table rounded table-striped table-dark table-hover">
+<div class="table-responsive">
+    <table class="table table-striped rounded table-dark table-hover">
         <caption>List of users</caption>
             <thead class="rounded thead-light">
                 <tr>
@@ -32,7 +32,7 @@
                     {% endfor %}
                 </tbody>
     </table>
-
+</div>
 {% endblock playlist_block %}
 {% block create_comment %}
 <div class="content-section">
