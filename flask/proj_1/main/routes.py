@@ -20,6 +20,8 @@ class SpotifyApi():
         self.playlists=None
         self.songs=None
         self.features=None
+        self.current_playlist_tags=[]
+        self.current_playlist=None
         self.current_auth = oauth2.SpotifyOAuth( SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET,
                                                 SPOTIPY_REDIRECT_URI,scope=self.SCOPE,
                                                 cache_path=self.CACHE )
@@ -29,15 +31,60 @@ class SpotifyApi():
         self.active = spotipy.Spotify(access_token)
 
     def call_playlists(self, current=0, next=5):
-       self.playlists=self.active.current_user_playlists(limit=next, offset=current)#limit max 50 need to offset after 50 for next 50
+        self.playlists=self.active.current_user_playlists(limit=next, offset=current)#limit max 50 need to offset after 50 for next 50
+        for playlist in range(0,len(self.playlists['items'])):
+                self.playlists['items'][playlist].update({'genres': []})#need refactor (green) issue with overwritten genre objects
 
     def call_songs(self, user_id, spotify_playlist_id, 
                     current=0, next=5):
+        self.current_playlist=spotify_playlist_id
         self.songs=self.active.user_playlist_tracks(user_id, playlist_id=spotify_playlist_id, 
                                                     fields=None, limit=next, offset=current, 
                                                     market=None)#limit max 100 need to offset after 100 for next 100
+        self.call_features()
+        self.call_tags(spotify_playlist_id)
+        self.insert_tag(user_id)
 
-    def update_playlists(self,user_id):
+    def call_features(self):
+        list_of_tracks=[]
+        for song in range(0,len(self.songs['items'])):
+            list_of_tracks.append(str(self.songs['items'][song]['track']['id']))
+        self.features=self.active.audio_features(tracks = list_of_tracks)
+    
+    def call_tags(self, spotify_playlist_id):
+        track_ids=set()
+        for song in range(0,len(self.songs['items'])):
+            track_ids.add(self.songs['items'][song]['track']['album']['artists'][0]['id'])
+        artists=self.active.artists(track_ids)
+        genres={}
+        for track in range(0,len(track_ids)):
+            for genre in artists['artists'][track]['genres']:
+                if genre in genres:
+                    genres[genre]+=1
+                else:
+                    genres.update({genre:1})
+        if genres:
+            genres=sorted(genres.items(),key=lambda genres:genres[1],reverse=True)
+            genres=[list(genres) for genres in zip(*genres)][0]
+            for playlist in range(0,len(self.playlists['items'])):
+                if self.playlists['items'][playlist]['id']==spotify_playlist_id:
+                    self.playlists['items'][playlist]['genres']=genres
+                    #print(self.playlists['items'][playlist]['genres'][0])
+            self.current_playlist_tags=genres
+
+    def insert_tag(self,user_id):
+        tag_to_db=Playlist.query.filter_by(spotify_id=self.current_playlist,user_id=user_id).first()
+        if tag_to_db.genre==None:
+            try:
+                tag_to_db.genre=self.current_playlist_tags[0]
+                db.session.commit()
+            except Exception as e:
+                print(e)
+                db.session.rollback()
+                pass
+
+
+    def insert_playlists(self,user_id):
         for playlist in range(0,len(self.playlists['items'])):
             playlist_to_db=Playlist(spotify_id=self.playlists['items'][playlist]['id'], 
                                 title=self.playlists['items'][playlist]['name'],
@@ -55,11 +102,7 @@ class SpotifyApi():
                     db.session.rollback()
 
 
-    def update_songs(self, playlist_id):
-        list_of_tracks=[]
-        for song in range(0,len(self.songs['items'])):
-            list_of_tracks.append(str(self.songs['items'][song]['track']['id']))
-        self.features=self.active.audio_features(tracks = list_of_tracks)
+    def insert_songs(self, playlist_id):
         for song in range(0,len(self.songs['items'])):
             song_to_db=Song(order = song,
                         spotify_id = self.songs['items'][song]['track']['id'], 
@@ -80,7 +123,6 @@ class SpotifyApi():
                         tempo = self.features[song]['tempo'],
                         uri = self.features[song]['uri'],
                         time_signature = self.features[song]['time_signature'])
-            
 
             song_from_db=Song.query.filter_by(spotify_id=song_to_db.spotify_id,
                                                 playlist_id=playlist_id).first()
@@ -130,8 +172,7 @@ def Topic(playlist_id=None):
 
         try:
             spotify.call_playlists(current=0, next=50)
-            spotify.update_playlists(me['id'])
-            pass
+            spotify.insert_playlists(me['id'])
         except Exception as e:
             #print(e)
             pass
@@ -146,7 +187,7 @@ def Topic(playlist_id=None):
         if current_user.is_authenticated:
             spotify.call_songs(me['id'],playlist_selected.spotify_id, current=0, next=50)
         #    print(spotify.songs)
-            spotify.update_songs(playlist_id)
+            spotify.insert_songs(playlist_id)
     posts = playlist_selected.posts
     form = PostForm()
     if form.validate_on_submit():

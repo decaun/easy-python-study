@@ -93,6 +93,7 @@ class Playlist(db.Model):
         id = db.Column(db.Integer, primary_key=True)
         spotify_id = db.Column(db.String(22), nullable=False)
         title = db.Column(db.String(100), nullable=False)
+        genre = db.Column(db.String(25))
         date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
         user_id = db.Column(db.String(30), db.ForeignKey('user.id'), nullable=False)
         posts = db.relationship('Post', backref='topic', lazy=True)
