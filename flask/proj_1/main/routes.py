@@ -31,9 +31,10 @@ class SpotifyApi():
         self.active = spotipy.Spotify(access_token)
 
     def call_playlists(self, current=0, next=5):
-        self.playlists=self.active.current_user_playlists(limit=next, offset=current)#limit max 50 need to offset after 50 for next 50
-        for playlist in range(0,len(self.playlists['items'])):
-                self.playlists['items'][playlist].update({'genres': []})#need refactor (green) issue with overwritten genre objects
+        if self.playlists==None or len(self.playlists['items'])<next:
+            self.playlists=self.active.current_user_playlists(limit=next, offset=current)#limit max 50 need to offset after 50 for next 50
+            for playlist in range(0,len(self.playlists['items'])):
+                    self.playlists['items'][playlist].update({'genres': []})#need refactor (green) issue with overwritten genre objects
 
     def call_songs(self, user_id, spotify_playlist_id, 
                     current=0, next=5):
@@ -43,7 +44,7 @@ class SpotifyApi():
                                                     market=None)#limit max 100 need to offset after 100 for next 100
         self.call_features()
         self.call_tags(spotify_playlist_id)
-        self.insert_tag(user_id)
+        self.insert_tag(user_id)#should be removed from here later
 
     def call_features(self):
         list_of_tracks=[]
@@ -69,7 +70,7 @@ class SpotifyApi():
             for playlist in range(0,len(self.playlists['items'])):
                 if self.playlists['items'][playlist]['id']==spotify_playlist_id:
                     self.playlists['items'][playlist]['genres']=genres
-                    #print(self.playlists['items'][playlist]['genres'][0])
+                    print(self.playlists['items'][playlist]['genres'][0])
             self.current_playlist_tags=genres
 
     def insert_tag(self,user_id):
@@ -91,6 +92,7 @@ class SpotifyApi():
                                 user_id=user_id)
             playlist_from_db=Playlist.query.filter_by(spotify_id=playlist_to_db.spotify_id,
                                                     user_id=user_id).first()
+            #print(playlist)
             if playlist_from_db!=None:
                 pass
             else:

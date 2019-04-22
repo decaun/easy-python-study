@@ -84,26 +84,25 @@
                     <div class="tab-content" id="pills-tabContent">
                         <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
                             <div class="custom-scrollbar-playlist rounded">
-                            <div class="list-group">
                                 {% for playlist in playlists %}
                                 <a href="/{{ playlist.id }}" class="list-group-item list-group-item-action {% if playlist.id == playlist_selected.id %}text-light bg-dark{% endif %}">{{ playlist.title }}
                                     <div class="badge badge-primary text-wrap  {% if playlist.id == playlist_selected.id %}text-dark bg-light{% else %}text-light bg-dark{% endif %}" style="width: auto;">{{ playlist.genre }}</div>
                                 </a>
-                                
                                 {% endfor %}
-                                    {% if current_user.is_authenticated %}
+                        </div>
+                    </div>
+                        <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">2nd</div>
+                        <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+                            <div class="custom-scrollbar-playlist rounded">
+                                {% if current_user.is_authenticated %}
                                     {% for playlist in range(0,spotify.playlists['items']|length) %}
                                     <a href="#" onclick="return false;" class="list-group-item list-group-item-action {% if playlist.id == playlist_selected.id %}text-light bg-dark{% endif %}">{{ spotify.playlists['items'][playlist]['name'] }}
                                         <div class="badge badge-primary text-wrap  {% if playlist.id == playlist_selected.id %}text-dark bg-light{% else %}text-light bg-dark{% endif %}" style="width: auto;">{{ spotify.playlists['items'][playlist]['genres'][0] }}</div>
                                     </a>
                                     {% endfor %}
                                 {% endif %}
-                                
                             </div>
                         </div>
-                    </div>
-                        <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">2nd</div>
-                        <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">3rd</div>
                       </div>
                 </div>
             </div>
