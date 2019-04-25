@@ -123,6 +123,8 @@
                 A simple light alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.
         </div>
     </div>
+    <div id="result"></div>
+
     <button id="getData">GET DATA FROM LOCAL</button>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -163,7 +165,7 @@
 
 
 document.getElementById('getData').addEventListener('click', getData);
-
+let current = 1;
 function getData(){
         fetch('http://127.0.0.1/getuserdata',{
             headers: new Headers({
@@ -172,9 +174,23 @@ function getData(){
             })
         })
         .then((res) => { return res.json() })
-        .then(data => {
-              console.log(data) // Prints result from `response.json()` in getRequest
-            })
+        .then((data) => {
+            let result = `<h2> Random User Info From Jsonplaceholder API</h2>`;
+            
+            data.forEach((playlist) => {
+                const { spotify_id, title } = playlist
+                result +=
+                    `<div>
+                         <ul class="w3-ul">
+                             <li> User Full Name : ${spotify_id}</li>
+                             <li> User Email : ${title} </li>
+                         </ul>
+                      </div>`;
+                        document.getElementById('result').innerHTML = result;
+                        current++;
+                        console.log(current);
+                    });
+                })
 }
   </script>
 </body>

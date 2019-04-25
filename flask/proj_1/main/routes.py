@@ -7,6 +7,8 @@ from flask_login import login_user, current_user, logout_user
 import spotipy
 from spotipy import oauth2
 
+var=1
+
 SPOTIPY_CLIENT_ID = '83a29879ab1b4e76acb763bb3f2d8bcc'
 SPOTIPY_CLIENT_SECRET = '1cc669adfa30443dbcf25eb52e43dbda'
 SPOTIPY_REDIRECT_URI = 'http://127.0.0.1:80/auth/'
@@ -253,7 +255,9 @@ def Auth():
 
 @app.route('/getuserdata',methods=['GET'])
 def Get_user_data():
-    playlist_call = Playlist.query.slice(1, 2).all()
+    global var
+    playlist_call = Playlist.query.with_entities(Playlist.spotify_id,Playlist.title).slice(1, 2+var).all()
     playlist_schema = PlaylistSchema(many=True)
     output = playlist_schema.dump(playlist_call).data
+    var+=1
     return jsonify(output)
