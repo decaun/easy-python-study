@@ -165,12 +165,13 @@
 
 
 document.getElementById('getData').addEventListener('click', getData);
-let current = 1;
+let current = 0;
+
 function getData(){
         fetch('http://127.0.0.1/getuserdata',{
             headers: new Headers({
             'Content-Type': 'application/json',
-            'Custom-header': 'Custom-Value'
+            'Counter': current
             })
         })
         .then((res) => { return res.json() })
@@ -187,10 +188,12 @@ function getData(){
                          </ul>
                       </div>`;
                         document.getElementById('result').innerHTML = result;
-                        current++;
-                        console.log(current);
+                        
                     });
+                    
                 })
+                current++;
+                console.log(current);
 }
   </script>
 </body>
