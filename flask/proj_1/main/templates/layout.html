@@ -123,7 +123,7 @@
                 A simple light alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.
         </div>
     </div>
-
+    <button id="getData">GET DATA FROM LOCAL</button>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -160,6 +160,22 @@
       // Connect to the player!
       player.connect();
     };
+
+
+document.getElementById('getData').addEventListener('click', getData);
+
+function getData(){
+        fetch('http://127.0.0.1/getuserdata',{
+            headers: new Headers({
+            'Content-Type': 'application/json',
+            'Custom-header': 'Custom-Value'
+            })
+        })
+        .then((res) => { return res.json() })
+        .then(data => {
+              console.log(data) // Prints result from `response.json()` in getRequest
+            })
+}
   </script>
 </body>
 </html>

@@ -58,7 +58,7 @@ pip install flask-dance[sqla]
 '''
 
 
-from main import db,login_manager
+from main import db,ma,login_manager
 from datetime import datetime
 from flask_login import UserMixin
 
@@ -100,7 +100,7 @@ class Playlist(db.Model):
         songs = db.relationship('Song', backref='topic', lazy=True)
 
         def __repr__(self):
-            return f"Playlist('{self.title}', '{self.date_posted}')"
+            return f"('id',{self.id}),('title',{self.title}), ('date',{self.date_posted})"
 
 
 class Post(db.Model):
@@ -146,3 +146,7 @@ class Song(db.Model):
         def __repr__(self):
             return f"Song('{self.name}', '{self.album}')"
         
+class PlaylistSchema(ma.ModelSchema):
+    class Meta:
+        model = Playlist
+

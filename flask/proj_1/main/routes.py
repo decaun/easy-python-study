@@ -1,4 +1,4 @@
-from main.models import User, Post, Playlist, Song, load_user
+from main.models import User, Post, Playlist, Song, load_user, PlaylistSchema
 from main.forms import PostForm
 from main import app,db
 from flask import render_template,jsonify,request,url_for,redirect
@@ -181,6 +181,7 @@ def Topic(playlist_id=None):
     else:
         print("Non-authenticated user")
     playlists = Playlist.query.all()
+
     if playlist_id==None:
         #playlist_selected = Playlist.query.get(1)
         playlist_selected = Playlist.query.first()
@@ -250,3 +251,9 @@ def Auth():
 
     return redirect(url_for('Topic'))
 
+@app.route('/getuserdata',methods=['GET'])
+def Get_user_data():
+    playlist_call = Playlist.query.slice(1, 2).all()
+    playlist_schema = PlaylistSchema(many=True)
+    output = playlist_schema.dump(playlist_call).data
+    return jsonify(output)
