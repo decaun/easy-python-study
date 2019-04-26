@@ -15,7 +15,7 @@
         <title>Spotilab</title>
     {% endif %}
 </head>
-<body>  
+<body onload="loadForMissingScroll();">  
     <div class="d-flex flex-column align-self-end">
         <ul class="nav justify-content-end nav-pills">
             <li class="nav-item">
@@ -69,10 +69,10 @@
                     <div class="row justify-content-center">
                     <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                         <li class="nav-item">
-                          <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Home</a>
+                          <a class="nav-link" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="false">Home</a>
                         </li>
                         <li class="nav-item">
-                          <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Profile</a>
+                          <a class="nav-link " id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Profile</a>
                         </li>
                         <li class="nav-item">
                           <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">Contact</a>
@@ -81,17 +81,21 @@
                       </ul>
                     </div>
                     <!--<p>Lorem ipsum dolor sit amet</p>-->
-                    <div class="tab-content" id="pills-tabContent">
-                        <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-                            <div class="custom-scrollbar-playlist rounded">
-                                {% for playlist in playlists %}
-                                <a href="/{{ playlist.id }}" class="list-group-item list-group-item-action {% if playlist.id == playlist_selected.id %}text-light bg-dark{% endif %}">{{ playlist.title }}
-                                    <div class="badge badge-primary text-wrap  {% if playlist.id == playlist_selected.id %}text-dark bg-light{% else %}text-light bg-dark{% endif %}" style="width: auto;">{{ playlist.genre }}</div>
-                                </a>
-                                {% endfor %}
+                        <div class="tab-content" id="pills-tabContent">
+                            <div class="tab-pane fade " id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                                <div class="custom-scrollbar-playlist rounded">
+                                    {% for playlist in playlists %}
+                                    <a href="/{{ playlist.id }}" class="list-group-item list-group-item-action {% if playlist.id == playlist_selected.id %}text-light bg-dark{% endif %}">{{ playlist.title }}
+                                        <div class="badge badge-primary text-wrap  {% if playlist.id == playlist_selected.id %}text-dark bg-light{% else %}text-light bg-dark{% endif %}" style="width: auto;">{{ playlist.genre }}</div>
+                                    </a>
+                                    {% endfor %}
+                            </div>
                         </div>
-                    </div>
-                        <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">2nd</div>
+
+                        <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                            <div class="custom-scrollbar-playlist rounded" id="loader" ></div>
+                        </div>
+
                         <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
                             <div class="custom-scrollbar-playlist rounded">
                                 {% if current_user.is_authenticated %}
@@ -131,70 +135,120 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <script src="https://sdk.scdn.co/spotify-player.js"></script>
-  <script>
-    window.onSpotifyWebPlaybackSDKReady = () => {
-      const token = 'BQDFc8lxRG8vlMRVyn7Ix8jltNFqcrhYZgHU-Jm8Y3Ci1ku4MKKzxIVi01XFFaBG0c-FaqyxqJ20C9OeX-IfqggJqxsBMsv-OG-c0b0PE4dOuGD9_hekzbD1B8aOfeQ5ZpgfC8j7KMIftLwN7IKM7JeRrVvlJ2v08vE2LpUTlw';
-      const player = new Spotify.Player({
-        name: 'Spotilab Web',
-        getOAuthToken: cb => { cb(token); }
-      });
-
-      // Error handling
-      player.addListener('initialization_error', ({ message }) => { console.error(message); });
-      player.addListener('authentication_error', ({ message }) => { console.error(message); });
-      player.addListener('account_error', ({ message }) => { console.error(message); });
-      player.addListener('playback_error', ({ message }) => { console.error(message); });
-
-      // Playback status updates
-      player.addListener('player_state_changed', state => { console.log(state); });
-
-      // Ready
-      player.addListener('ready', ({ device_id }) => {
-        console.log('Ready with Device ID', device_id);
-      });
-
-      // Not Ready
-      player.addListener('not_ready', ({ device_id }) => {
-        console.log('Device ID has gone offline', device_id);
-      });
-
-      // Connect to the player!
-      player.connect();
-    };
-
+  <script type="text/javascript" >
 
 document.getElementById('getData').addEventListener('click', getData);
-let current = 0;
 
-function getData(){
+
+let currentCount = parseInt(window.location.pathname.match(/\d+$/))-1;
+if (isNaN(currentCount)) {
+    currentCount=0;
+}
+let currentCountBottom=0;
+let currentCountTop=-1;
+let currentTopic = String(window.location.pathname.match(/([a-z])\w+/g));
+
+if (currentTopic==='null') {
+    currentTopic='home';
+}
+//document.getElementById('pills-profile-tab').classList.add('active').setAttribute("aria-selected", true);
+
+const loader=document.getElementById('loader');
+const loaderButton=document.getElementById('pills-profile-tab');
+loader.addEventListener('scroll', loadOnScroll);
+loaderButton.addEventListener('click', loadForMissingScroll);
+
+
+document.getElementById('pills-'+currentTopic+'-tab').classList.add('active');
+document.getElementById('pills-'+currentTopic).classList.add('show');
+document.getElementById('pills-'+currentTopic).classList.add('active');
+
+function loadForMissingScroll(){
+    //if (!(loader.scrollHeight > loader.clientHeight))
+
+    for (j = 0; j < 10; j++){
+    if (currentCount<=10){
+        getData(loader,'last');
+    }else{
+        getData(loader,'first');
+    }
+    getData(loader,'last');
+    }
+    loaderButton.removeEventListener('click', loadForMissingScroll);
+}
+
+function getData(element,selector){
+    if (selector ==='last'){
         fetch('http://127.0.0.1/getuserdata',{
             headers: new Headers({
             'Content-Type': 'application/json',
-            'Counter': current
+            'Counter': currentCount+currentCountBottom
             })
         })
         .then((res) => { return res.json() })
         .then((data) => {
-            let result = `<h2> Random User Info From Jsonplaceholder API</h2>`;
-            
+            let result = element.innerHTML;
             data.forEach((playlist) => {
-                const { spotify_id, title } = playlist
-                result +=
-                    `<div>
-                         <ul class="w3-ul">
-                             <li> User Full Name : ${spotify_id}</li>
-                             <li> User Email : ${title} </li>
-                         </ul>
-                      </div>`;
-                        document.getElementById('result').innerHTML = result;
-                        
-                    });
+                const { id, title, genre } = playlist
+                if ((id-1)==currentCount){
                     
+                    result +=
+                    `<a href="/profile/${id}" class="list-group-item list-group-item-action text-light bg-dark">${title}
+                    <div class="badge badge-primary text-wrap text-dark bg-light" style="width: auto;">${genre}</div>
+                    </a>`;
+                }else{
+                   result +=
+                    `<a href="/profile/${id}" class="list-group-item list-group-item-action ">${title}
+                    <div class="badge badge-primary text-wrap text-light bg-dark" style="width: auto;">${genre}</div>
+                    </a>`;
+                }
+                    element.innerHTML = result;
+                    });
                 })
-                current++;
-                console.log(current);
+                currentCountBottom++;
+    }else if (selector ==='first' && currentCount+currentCountTop>0){
+     fetch('http://127.0.0.1/getuserdata',{
+            headers: new Headers({
+            'Content-Type': 'application/json',
+            'Counter': currentCount+currentCountTop
+            })
+        })
+        .then((res) => { return res.json() })
+        .then((data) => {
+            let result = element.innerHTML;
+            data.forEach((playlist) => {
+                const { id, title, genre } = playlist
+                    result=`<a href="/profile/${id}" class="list-group-item list-group-item-action ">${title}
+                    <div class="badge badge-primary text-wrap text-light bg-dark" style="width: auto;">${genre}</div>
+                    </a>`+result;
+                    element.innerHTML = result;
+                    });
+                })
+                currentCountTop--;
+    }
 }
+
+function loadOnScroll() {
+    if (this.scrollHeight - this.scrollTop-10 <= this.clientHeight) {
+        getData(this,'last');
+    }else if (this.scrollTop<10) {
+        getData(this,'first');
+        this.scrollTo(0,11)
+    }    
+}
+
+function delay(ms) {
+        var cur_d = new Date();
+        var cur_ticks = cur_d.getTime();
+        var ms_passed = 0;
+        while(ms_passed < ms) {
+            var d = new Date();  // Possible memory leak?
+            var ticks = d.getTime();
+            ms_passed = ticks - cur_ticks;
+            // d = null;  // Prevent memory leak?
+        }
+    }
+
   </script>
 </body>
 </html>

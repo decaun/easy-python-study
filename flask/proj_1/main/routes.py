@@ -8,7 +8,8 @@ import spotipy
 
 @app.route('/', methods = ['GET', 'POST'])
 @app.route('/<int:playlist_id>', methods = ['GET', 'POST'])
-def Topic(playlist_id=None):
+@app.route('/<string:topic>/<int:playlist_id>', methods = ['GET', 'POST'])
+def Topic(playlist_id=None,topic=None):
     if current_user.is_authenticated:
         print("Authenticated user")
         try:
@@ -99,7 +100,7 @@ def Auth():
 
 @app.route('/getuserdata',methods=['GET'])
 def Get_user_data():
-    playlist_call = Playlist.query.with_entities(Playlist.spotify_id,Playlist.title).slice(1, 2+int(request.headers['Counter'])).all()
+    playlist_call = Playlist.query.with_entities(Playlist.id, Playlist.title, Playlist.genre).slice(int(request.headers['Counter']), 1+int(request.headers['Counter'])).all()
     playlist_schema = PlaylistSchema(many=True)
     output = playlist_schema.dump(playlist_call).data
    
