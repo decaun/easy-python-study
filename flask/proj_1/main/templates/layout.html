@@ -129,7 +129,7 @@
     </div>
     <div id="result"></div>
 
-    <button id="getData">GET DATA FROM LOCAL</button>
+    <button id="getPlaylistData">GET DATA FROM LOCAL</button>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -137,7 +137,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   <script type="text/javascript" >
 
-document.getElementById('getData').addEventListener('click', getData);
+document.getElementById('getPlaylistData').addEventListener('click', getPlaylistData);
 
 
 let currentCount = parseInt(window.location.pathname.match(/\d+$/))-1;
@@ -168,18 +168,18 @@ function loadForMissingScroll(){
 
     for (j = 0; j < 10; j++){
     if (currentCount<=10){
-        getData(loader,'last');
+        getPlaylistData(loader,'last');
     }else{
-        getData(loader,'first');
+        getPlaylistData(loader,'first');
     }
-    getData(loader,'last');
+    getPlaylistData(loader,'last');
     }
     loaderButton.removeEventListener('click', loadForMissingScroll);
 }
 
-function getData(element,selector){
+function getPlaylistData(element,selector){
     if (selector ==='last'){
-        fetch('http://127.0.0.1/getuserdata',{
+        fetch('http://127.0.0.1/getplaylist',{
             headers: new Headers({
             'Content-Type': 'application/json',
             'Counter': currentCount+currentCountBottom
@@ -207,7 +207,7 @@ function getData(element,selector){
                 })
                 currentCountBottom++;
     }else if (selector ==='first' && currentCount+currentCountTop>0){
-     fetch('http://127.0.0.1/getuserdata',{
+     fetch('http://127.0.0.1/getplaylist',{
             headers: new Headers({
             'Content-Type': 'application/json',
             'Counter': currentCount+currentCountTop
@@ -230,9 +230,9 @@ function getData(element,selector){
 
 function loadOnScroll() {
     if (this.scrollHeight - this.scrollTop-10 <= this.clientHeight) {
-        getData(this,'last');
+        getPlaylistData(this,'last');
     }else if (this.scrollTop<10) {
-        getData(this,'first');
+        getPlaylistData(this,'first');
         this.scrollTo(0,11)
     }    
 }
