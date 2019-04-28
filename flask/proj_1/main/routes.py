@@ -1,4 +1,4 @@
-from main.models import User, Post, Playlist, Song, load_user, PlaylistSchema
+from main.models import User, Post, Playlist, Song, load_user, PlaylistSchema, SongSchema
 from main.forms import PostForm
 from main import app,db,spotify
 from flask import render_template,jsonify,request,url_for,redirect
@@ -35,7 +35,7 @@ def Topic(playlist_id=None,topic=None):
     else:
         playlist_selected=Playlist.query.get(playlist_id)
         if current_user.is_authenticated:
-            spotify.call_songs(me['id'],playlist_selected.spotify_id, current=0, next=50)
+            spotify.call_songs(playlist_selected.user_id,playlist_selected.spotify_id, current=0, next=50)
         #    print(spotify.songs)
             spotify.insert_songs(playlist_id)
     posts = playlist_selected.posts
@@ -99,9 +99,18 @@ def Auth():
     return redirect(url_for('Topic'))
 
 @app.route('/getplaylist',methods=['GET'])
-def Get_user_data():
+def Get_playlist_data():
     playlist_call = Playlist.query.with_entities(Playlist.id, Playlist.title, Playlist.genre).slice(int(request.headers['Counter']), 1+int(request.headers['Counter'])).all()
     playlist_schema = PlaylistSchema(many=True)
     output = playlist_schema.dump(playlist_call).data
+   
+    return jsonify(output)
+
+@app.route('/getsong',methods=['GET'])
+def Get_song_data():
+    song_call = Song.query.with_entities(Song.name, Song.album, Song.artist).filter_by(playlist_id=int(request.headers['Playlist-ID'])).slice(int(request.headers['Counter']), 5+int(request.headers['Counter'])).all()
+    print(request.headers['Playlist-ID'])
+    song_schema = SongSchema(many=True)
+    output = song_schema.dump(song_call).data
    
     return jsonify(output)

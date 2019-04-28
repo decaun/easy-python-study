@@ -150,3 +150,7 @@ class PlaylistSchema(ma.ModelSchema):
     class Meta:
         model = Playlist
 
+class SongSchema(ma.ModelSchema):
+    class Meta:
+        model = Song
+

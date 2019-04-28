@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block playlist_block %}
-<div class="custom-scrollbar-playlist rounded">
+<div class="custom-scrollbar-playlist rounded" id="songContainer">
     <table class="table table-striped rounded table-dark table-hover">
             <thead class="rounded thead-light">
                 <tr>
@@ -15,7 +15,7 @@
                     <th scope="col">Time</th>
                 </tr>
             </thead>
-                <tbody>
+                <tbody id="songLoader">
                     {% for song in playlist_selected.songs %}
                     <tr>
                         <td>{{song.name}}</td>
@@ -32,6 +32,57 @@
                 </tbody>
     </table>
 </div>
+<script type="text/javascript" >
+let currentPageId = parseInt(window.location.pathname.match(/\d+$/));
+if (isNaN(currentPageId)) {
+    currentPageId = 0;
+}
+var currentSongCount = 0;
+let songLoader=document.getElementById('songLoader');
+let songContainer=document.getElementById('songContainer');
+//songContainer.addEventListener('scroll', getSongData(songLoader,currentPageId,currentSongCount));
+songContainer.addEventListener("scroll", loadLastSong);
+
+function getSongData(element,playlistID){
+        fetch('http://127.0.0.1/getsong',{
+            headers: new Headers({
+            'Content-Type': 'application/json',
+            'Playlist-ID': playlistID,
+            'Counter': currentSongCount
+            })
+        })
+        .then((res) => { return res.json() })
+        .then((data) => {
+            let result = element.innerHTML;
+            data.forEach((song) => {
+                const { album, artist, name } = song
+                    result +=
+                    `<tr>
+                        <td>${name}</td>
+                        <td>${album}</td>
+                        <td>${artist}</td>
+                        <td>popularity</td>
+                        <td>danceability</td>
+                        <td>energy</td>
+                        <td>key</td>
+                        <td>tempo</td>
+                        <td>time</td>
+                    </tr>`;
+                    element.innerHTML = result;
+                    });
+                })
+                console.log(currentSongCount);
+                currentSongCount+=5;
+                
+                
+}
+function loadLastSong(){
+    if (this.scrollHeight - this.scrollTop-100 <= this.clientHeight) {
+        getSongData(songLoader,currentPageId);
+    }
+}
+
+</script>
 {% endblock playlist_block %}
 {% block create_comment %}
 <div class="content-section">
