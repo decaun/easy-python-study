@@ -68,7 +68,6 @@ class SpotifyApi():
             for playlist in range(0,len(self.playlists['items'])):
                 if self.playlists['items'][playlist]['id']==spotify_playlist_id:
                     self.playlists['items'][playlist]['genres']=genres
-                    print(self.playlists['items'][playlist]['genres'][0])
             self.current_playlist_tags=genres
 
     def insert_tag(self,user_id):

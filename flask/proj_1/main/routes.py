@@ -109,7 +109,6 @@ def Get_playlist_data():
 @app.route('/getsong',methods=['GET'])
 def Get_song_data():
     song_call = Song.query.with_entities(Song.name, Song.album, Song.artist).filter_by(playlist_id=int(request.headers['Playlist-ID'])).slice(int(request.headers['Counter']), 5+int(request.headers['Counter'])).all()
-    print(request.headers['Playlist-ID'])
     song_schema = SongSchema(many=True)
     output = song_schema.dump(song_call).data
    
