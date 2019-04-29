@@ -124,8 +124,9 @@ def Get_post_data():
     #.options(lazyload("author"))
     #Post.query.options(joinedload(Post.author).joinedload(User.username,innerjoin=True)).with_entities(User.username,Post.title, Post.content, Post.date_posted, Post.user_id).all()
     post_call = db.session.query(Post).filter_by(
-                                playlist_id=int(2)).join(User).with_entities(
-                                User.username,Post.content,Post.title, Post.date_posted, Post.user_id).all()
+                                playlist_id=int(request.headers['Playlist-ID'])).join(User).with_entities(
+                                User.username,Post.content,Post.title, Post.date_posted, Post.user_id).slice(
+                                int(request.headers['Counter']), 5+int(request.headers['Counter'])).all()
     post_schema = PostSchema(many=True)
     output = post_schema.dump(post_call).data
    

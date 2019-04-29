@@ -62,7 +62,6 @@ function getSongData(element,playlistID){
                     element.innerHTML = result;
                     });
                 })
-                console.log(currentSongCount);
                 currentSongCount+=5;
                 
                 
@@ -115,40 +114,25 @@ function loadLastSong(){
 </div>
 {% endblock create_comment %}
 {% block comment_block %}
-<div class="container">
-    {% for post in posts %}
-        <article class="media content-section">
-            <div class="media-body">
-            <div class="article-metadata">
-                <a class="mr-2" href="#">{{ post.author.username }}</a>
-                <small class="text-muted">{{ post.date_posted }}</small>
-            </div>
-                <h2><a class="article-title" href="#">{{ post.title }}</a></h2>
-                <p class="article-content">{{ post.content }}</p>
-            </div>
-        </article>
-
-    {% endfor %}
-</div>
+<div class="container" id="postLoader"></div>
 
 <script type="text/javascript" >
-/*
-let currentPageId = parseInt(window.location.pathname.match(/\d+$/));
-if (isNaN(currentPageId)) {
-    currentPageId = 0;
+
+let currentPageId2 = parseInt(window.location.pathname.match(/\d+$/));
+if (isNaN(currentPageId2)) {
+    currentPageId2 = 0;
 }
 var currentPostCount = 0;
 let postLoader=document.getElementById('postLoader');
-let postContainer=document.getElementById('postContainer');
-//postContainer.addEventListener('scroll', getSongData(postLoader,currentPageId,currentPostCount));
-postContainer.addEventListener("scroll", loadLastPost);
+//postContainer.addEventListener('scroll', getPostData(postLoader,currentPageId2,currentPostCount));
+window.addEventListener("scroll", loadLastPost);
 
-for (j = 0; j < 4; j++){
-    getSongData(postLoader,currentPageId);
+for (j = 0; j < 1; j++){
+    getPostData(postLoader,currentPageId2);
 }
 
-function getSongData(element,playlistID){
-        fetch('http://127.0.0.1/getsong',{
+function getPostData(element,playlistID){
+        fetch('http://127.0.0.1/getpost',{
             headers: new Headers({
             'Content-Type': 'application/json',
             'Playlist-ID': playlistID,
@@ -158,33 +142,30 @@ function getSongData(element,playlistID){
         .then((res) => { return res.json() })
         .then((data) => {
             let result = element.innerHTML;
-            data.forEach((song) => {
-                const { album, artist, name } = song
+            data.forEach((post) => {
+                const { content, date_posted, title, user_id, username } = post
                     result +=
-                    `<tr>
-                        <td>${name}</td>
-                        <td>${album}</td>
-                        <td>${artist}</td>
-                        <td>popularity</td>
-                        <td>danceability</td>
-                        <td>energy</td>
-                        <td>key</td>
-                        <td>tempo</td>
-                        <td>time</td>
-                    </tr>`;
+                    `<article class="media content-section">
+                        <div class="media-body">
+                        <div class="article-metadata">
+                            <a class="mr-2" href="#">${username}</a>
+                            <small class="text-muted">${date_posted}</small>
+                        </div>
+                            <h2><a class="article-title" href="#">${title}</a></h2>
+                            <p class="article-content">${content}</p>
+                        </div>
+                    </article>`;
                     element.innerHTML = result;
                     });
                 })
-                console.log(currentPostCount);
                 currentPostCount+=5;
                 
                 
 }
 function loadLastPost(){
-    if (this.scrollHeight - this.scrollTop-100 <= this.clientHeight) {
-        getSongData(songLoader,currentPageId);
-    }
-}
-*/
+    if ((window.innerHeight + window.scrollY) +3 >= document.body.offsetHeight) {
+        getPostData(postLoader,currentPageId2);
+    }}
+
 </script>
 {% endblock comment_block %}

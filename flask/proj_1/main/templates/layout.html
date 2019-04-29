@@ -128,18 +128,12 @@
         </div>
     </div>
     <div id="result"></div>
-
-    <button id="getPlaylistData">GET DATA FROM LOCAL</button>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   <script type="text/javascript" >
-
-document.getElementById('getPlaylistData').addEventListener('click', getPlaylistData);
-
-
 let currentCount = parseInt(window.location.pathname.match(/\d+$/))-1;
 if (isNaN(currentCount)) {
     currentCount=0;
@@ -156,7 +150,7 @@ if (currentTopic==='null') {
 const loader=document.getElementById('loader');
 const loaderButton=document.getElementById('pills-profile-tab');
 loader.addEventListener('scroll', loadOnScroll);
-loaderButton.addEventListener('click', loadForMissingScroll);
+loader.addEventListener('mouseover', scrollFixTop);
 
 
 document.getElementById('pills-'+currentTopic+'-tab').classList.add('active');
@@ -167,14 +161,14 @@ function loadForMissingScroll(){
     //if (!(loader.scrollHeight > loader.clientHeight))
 
     for (j = 0; j < 10; j++){
+        getPlaylistData(loader,'last');
     if (currentCount<=10){
         getPlaylistData(loader,'last');
     }else{
         getPlaylistData(loader,'first');
-    }
-    getPlaylistData(loader,'last');
-    }
-    loaderButton.removeEventListener('click', loadForMissingScroll);
+    }}
+    getPlaylistData(loader,'first');
+    loaderButton.removeEventListener('click', loadForMissingScroll)
 }
 
 function getPlaylistData(element,selector){
@@ -233,8 +227,13 @@ function loadOnScroll() {
         getPlaylistData(this,'last');
     }else if (this.scrollTop<10) {
         getPlaylistData(this,'first');
-        this.scrollTo(0,11)
-    }    
+        this.scrollTo(0,11);
+    }
+}
+
+function scrollFixTop(){
+    this.scrollTo(0,11);
+    loader.removeEventListener('mouseover', scrollFixTop)
 }
 
 function delay(ms) {
