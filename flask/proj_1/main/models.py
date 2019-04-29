@@ -156,5 +156,6 @@ class SongSchema(ma.ModelSchema):
 
 class PostSchema(ma.ModelSchema):
     class Meta:
-        model = Post
+        fields = ("username", "title", "content", "date_posted", "user_id")
+
 
