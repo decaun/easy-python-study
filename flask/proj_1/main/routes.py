@@ -1,4 +1,4 @@
-from main.models import User, Post, Playlist, Song, load_user, PlaylistSchema, SongSchema
+from main.models import User, Post, Playlist, Song, load_user, PlaylistSchema, SongSchema, PostSchema
 from main.forms import PostForm
 from main import app,db,spotify
 from flask import render_template,jsonify,request,url_for,redirect
@@ -100,7 +100,8 @@ def Auth():
 
 @app.route('/getplaylist',methods=['GET'])
 def Get_playlist_data():
-    playlist_call = Playlist.query.with_entities(Playlist.id, Playlist.title, Playlist.genre).slice(int(request.headers['Counter']), 1+int(request.headers['Counter'])).all()
+    playlist_call = Playlist.query.with_entities(Playlist.id, Playlist.title, Playlist.genre).slice(
+                                int(request.headers['Counter']), 1+int(request.headers['Counter'])).all()
     playlist_schema = PlaylistSchema(many=True)
     output = playlist_schema.dump(playlist_call).data
    
@@ -108,8 +109,19 @@ def Get_playlist_data():
 
 @app.route('/getsong',methods=['GET'])
 def Get_song_data():
-    song_call = Song.query.with_entities(Song.name, Song.album, Song.artist).filter_by(playlist_id=int(request.headers['Playlist-ID'])).slice(int(request.headers['Counter']), 5+int(request.headers['Counter'])).all()
+    song_call = Song.query.with_entities(Song.name, Song.album, Song.artist).filter_by(
+                                playlist_id=int(request.headers['Playlist-ID'])).slice(
+                                int(request.headers['Counter']), 5+int(request.headers['Counter'])).all()
     song_schema = SongSchema(many=True)
     output = song_schema.dump(song_call).data
+   
+    return jsonify(output)
+
+@app.route('/getpost',methods=['GET'])
+def Get_post_data():
+    #post_call = db.session.query(Post).join(User).with_entities(User.username,Post.content,Post.title).all()
+    post_call = Post.query.with_entities(Post.title, Post.content, Post.date_posted, Post.user_id).all()
+    post_schema = PostSchema(many=True)
+    output = post_schema.dump(post_call).data
    
     return jsonify(output)

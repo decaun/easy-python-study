@@ -154,3 +154,7 @@ class SongSchema(ma.ModelSchema):
     class Meta:
         model = Song
 
+class PostSchema(ma.ModelSchema):
+    class Meta:
+        model = Post
+
