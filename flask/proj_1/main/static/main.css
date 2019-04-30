@@ -129,3 +129,15 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #555; 
 }
+
+.playlist-scroll {
+  height: 100%;
+  position: absolute;
+  overflow-y: scroll;
+  top: 20;
+  
+  }
+
+  .custom-left {
+    height: 78%;
+  }
