@@ -45,7 +45,7 @@ def Topic(playlist_id=None,topic=None):
         db.session.add(post)
         db.session.commit()
         return redirect(url_for('Topic', playlist_id=playlist_selected.id))
-    return render_template('home.html',posts = posts,form=form, playlists = playlists,playlist_selected = playlist_selected, spotify=spotify)
+    return render_template('home.html',form=form, playlists = playlists,playlist_selected = playlist_selected, spotify=spotify)
 
 @app.route('/login')
 def Login():
@@ -99,7 +99,7 @@ def Auth():
     return redirect(url_for('Topic'))
 
 @app.route('/getplaylist',methods=['GET'])
-def Get_playlist_data():
+def Playlist_data():
     playlist_call = Playlist.query.with_entities(Playlist.id, Playlist.title, Playlist.genre).slice(
                                 int(request.headers['Counter']), 1+int(request.headers['Counter'])).all()
     playlist_schema = PlaylistSchema(many=True)
@@ -108,7 +108,7 @@ def Get_playlist_data():
     return jsonify(output)
 
 @app.route('/getsong',methods=['GET'])
-def Get_song_data():
+def Song_data():
     song_call = Song.query.with_entities(Song.name, Song.album, Song.artist).filter_by(
                                 playlist_id=int(request.headers['Playlist-ID'])).slice(
                                 int(request.headers['Counter']), 5+int(request.headers['Counter'])).all()
@@ -118,7 +118,7 @@ def Get_song_data():
     return jsonify(output)
 
 @app.route('/getpost',methods=['GET'])
-def Get_post_data():
+def Post_data():
     #.with_entities("author",Post.title, Post.content, Post.date_posted, Post.user_id)
     #.options(lazyload("author"))
     #Post.query.options(joinedload(Post.author).joinedload(User.username,innerjoin=True)).with_entities(User.username,Post.title, Post.content, Post.date_posted, Post.user_id).all()
@@ -130,3 +130,28 @@ def Get_post_data():
     output = post_schema.dump(post_call).data
    
     return jsonify(output)
+
+@app.route('/cachedplaylist',methods=['GET'])
+def Cached_playlist_data(playlist_id=None):
+    if current_user.is_authenticated:
+        try:
+            spotify.playlists=None
+            spotify.call_playlists(current=0, next=2)
+        except Exception as e:
+            #print(e)
+            pass
+        return jsonify(spotify.playlists)
+
+'''
+@app.route('/cachedplaylist/<string:playlist_id>',methods=['GET'])
+def Cached_playlist_data(playlist_id=None):
+    if current_user.is_authenticated:
+        try:
+            spotify.call_playlists(current=0, next=50)
+            playlist_selected=Playlist.query.get(playlist_id)
+            spotify.call_songs(playlist_selected.user_id,playlist_selected.spotify_id, current=0, next=50)
+            print(spotify.songs)
+        except Exception as e:
+            #print(e)
+            pass
+'''

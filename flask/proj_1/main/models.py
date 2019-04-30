@@ -158,4 +158,3 @@ class PostSchema(ma.ModelSchema):
     class Meta:
         fields = ("username", "title", "content", "date_posted", "user_id")
 
-
