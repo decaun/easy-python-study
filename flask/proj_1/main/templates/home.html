@@ -79,20 +79,6 @@ function loadLastSong(){
     <form method="POST" action="">
         {{ form.hidden_tag() }}
         <fieldset class="form-group">
-            <legend class="border-bottom mb-4">{{ legend }}</legend>
-            <div class="form-group">
-                {{ form.title.label(class="form-control-label") }}
-                {% if form.title.errors %}
-                    {{ form.title(class="form-control form-control-lg is-invalid") }}
-                    <div class="invalid-feedback">
-                        {% for error in form.title.errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    {{ form.title(class="form-control form-control-lg") }}
-                {% endif %}
-            </div>
             <div class="form-group">
                 {{ form.content.label(class="form-control-label") }}
                 {% if form.content.errors %}
@@ -103,11 +89,11 @@ function loadLastSong(){
                         {% endfor %}
                     </div>
                 {% else %}
-                    {{ form.content(class="form-control form-control-lg") }}
+                    {{ form.content(class="form-control form-control-lg",rows="3",placeholder="Comment") }}
                 {% endif %}
             </div>
         </fieldset>
-        <div class="form-group">
+        <div class="form-group text-right">
             {{ form.submit(class="btn btn-outline-info") }}
         </div>
     </form>
@@ -147,12 +133,11 @@ function getPostData(element,playlistID){
                     result +=
                     `<article class="media content-section">
                         <div class="media-body">
-                        <div class="article-metadata">
+                            <p class="lead font-weight-normal">${content}</p>
+                            <div class="article-metadata text-right">
                             <a class="mr-2" href="#">${username}</a>
                             <small class="text-muted">${date_posted}</small>
                         </div>
-                            <h2><a class="article-title" href="#">${title}</a></h2>
-                            <p class="article-content">${content}</p>
                         </div>
                     </article>`;
                     element.innerHTML = result;
