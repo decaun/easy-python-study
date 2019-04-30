@@ -188,7 +188,7 @@ function getPlaylistData(element,selector){
                     </a>`;
                 }else{
                    result +=
-                    `<a href="/profile/${id}" class="list-group-item list-group-item-action font-weight-normal">${title}
+                    `<a href="/profile/${id}" class="list-group-item list-group-item-action font-weight-bold">${title}
                     <div class="badge badge-primary text-wrap text-light bg-dark font-weight-normal" style="width: auto;">${genre}</div>
                     </a>`;
                 }
@@ -208,7 +208,7 @@ function getPlaylistData(element,selector){
             let result = element.innerHTML;
             data.forEach((playlist) => {
                 const { id, title, genre } = playlist
-                    result=`<a href="/profile/${id}" class="list-group-item list-group-item-action font-weight-normal">${title}
+                    result=`<a href="/profile/${id}" class="list-group-item list-group-item-action font-weight-bold">${title}
                     <div class="badge badge-primary text-wrap text-light bg-dark font-weight-normal" style="width: auto;">${genre}</div>
                     </a>`+result;
                     element.innerHTML = result;
