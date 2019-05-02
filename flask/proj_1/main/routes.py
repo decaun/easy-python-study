@@ -100,7 +100,11 @@ def Auth():
 
 @app.route('/getplaylist',methods=['GET'])
 def Playlist_data():
-    playlist_call = Playlist.query.with_entities(Playlist.id, Playlist.title, Playlist.genre).slice(
+    if( request.headers['Selector']=='last' ):
+        playlist_call = Playlist.query.with_entities(Playlist.id, Playlist.title, Playlist.genre).slice(
+                                int(request.headers['Counter']), 5+int(request.headers['Counter'])).all()
+    else:
+        playlist_call = Playlist.query.with_entities(Playlist.id, Playlist.title, Playlist.genre).slice(
                                 int(request.headers['Counter']), 1+int(request.headers['Counter'])).all()
     playlist_schema = PlaylistSchema(many=True)
     output = playlist_schema.dump(playlist_call).data
