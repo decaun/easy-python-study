@@ -19,7 +19,7 @@
     <div class="d-flex flex-column align-self-end">
         <ul class="nav justify-content-end nav-pills">
             <li class="nav-item">
-                <a class="nav-link active text-white bg-dark" href="#">Active</a>
+                <a class="nav-link active text-white bg-dark" href="http://127.0.0.1/login">Login</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link text-dark" href="#">Link</a>
@@ -63,28 +63,28 @@
                     <div class="row justify-content-center">
                     <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                         <li class="nav-item">
-                          <a class="nav-link" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="false">Home</a>
+                          <a class="nav-link" id="pills-hot-tab" data-toggle="pill" href="#pills-hot" role="tab" aria-controls="pills-hot" aria-selected="false">Hot</a>
                         </li>
                         <li class="nav-item">
-                          <a class="nav-link " id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Profile</a>
+                          <a class="nav-link " id="pills-new-tab" data-toggle="pill" href="#pills-new" role="tab" aria-controls="pills-new" aria-selected="false">New</a>
                         </li>
                         <li class="nav-item">
-                          <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">Contact</a>
+                          <a class="nav-link" id="pills-user-tab" data-toggle="pill" href="#pills-user" role="tab" aria-controls="pills-user" aria-selected="false">User</a>
                         </li>
                         
                       </ul>
                     </div>
                     <!--<p>Lorem ipsum dolor sit amet</p>-->
                         <div class="tab-content" id="pills-tabContent">
-                            <div class="tab-pane fade " id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                            <div class="tab-pane fade " id="pills-hot" role="tabpanel" aria-labelledby="pills-hot-tab">
                                 <div class="playlist-scroll rounded">fill me</div>
                         </div>
 
-                        <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                        <div class="tab-pane fade" id="pills-new" role="tabpanel" aria-labelledby="pills-new-tab">
                             <div class="playlist-scroll rounded small" id="loader" ></div>
                         </div>
 
-                        <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+                        <div class="tab-pane fade" id="pills-user" role="tabpanel" aria-labelledby="pills-user-tab">
                             <div class="playlist-scroll rounded">
                                 {% if current_user.is_authenticated %}
                                     {% for playlist in range(0,spotify.playlists['items']|length) %}
@@ -135,12 +135,12 @@ let currentCountTop=-1;
 let currentTopic = String(window.location.pathname.match(/([a-z])\w+/g));
 
 if (currentTopic==='null') {
-    currentTopic='home';
+    currentTopic='hot';
 }
-//document.getElementById('pills-profile-tab').classList.add('active').setAttribute("aria-selected", true);
+//document.getElementById('pills-new-tab').classList.add('active').setAttribute("aria-selected", true);
 
 const loader=document.getElementById('loader');
-const loaderButton=document.getElementById('pills-profile-tab');
+const loaderButton=document.getElementById('pills-new-tab');
 const leftPanel=document.getElementById('leftPanel');
 const leftPanelInitialHeight=leftPanel.style.height;
 
@@ -156,13 +156,9 @@ document.getElementById('pills-'+currentTopic).classList.add('active');
 function loadForMissingScroll(){
     //if (!(loader.scrollHeight > loader.clientHeight))
 
-    for (j = 0; j < 10; j++){
+    for (j = 0; j < 3; j++){
         getPlaylistData(loader,'last');
-    if (currentCount<=10){
-        getPlaylistData(loader,'last');
-    }else{
-        getPlaylistData(loader,'first');
-    }}
+    }
     getPlaylistData(loader,'first');
     loaderButton.removeEventListener('click', loadForMissingScroll)
 }
@@ -172,7 +168,8 @@ function getPlaylistData(element,selector){
         fetch('http://127.0.0.1/getplaylist',{
             headers: new Headers({
             'Content-Type': 'application/json',
-            'Counter': currentCount+currentCountBottom
+            'Counter': currentCount+currentCountBottom,
+            'Selector':'last'
             })
         })
         .then((res) => { return res.json() })
@@ -183,24 +180,25 @@ function getPlaylistData(element,selector){
                 if ((id-1)==currentCount){
                     document.getElementById('playlistTitle').innerHTML=`<h1>${title}</h1><h6>#${genre}</h6>`;
                     result +=
-                    `<a href="/profile/${id}" class="list-group-item list-group-item-action text-light bg-dark font-weight-normal">${title}
+                    `<a href="/new/${id}" class="list-group-item list-group-item-action text-light bg-dark font-weight-normal">${title}
                     <div class="badge badge-primary text-wrap text-dark bg-light font-weight-normal" style="width: auto;">${genre}</div>
                     </a>`;
                 }else{
                    result +=
-                    `<a href="/profile/${id}" class="list-group-item list-group-item-action font-weight-bold">${title}
+                    `<a href="/new/${id}" class="list-group-item list-group-item-action font-weight-bold">${title}
                     <div class="badge badge-primary text-wrap text-light bg-dark font-weight-normal" style="width: auto;">${genre}</div>
                     </a>`;
                 }
                     element.innerHTML = result;
                     });
                 })
-                currentCountBottom++;
+                currentCountBottom+=5;
     }else if (selector ==='first' && currentCount+currentCountTop>0){
      fetch('http://127.0.0.1/getplaylist',{
             headers: new Headers({
             'Content-Type': 'application/json',
-            'Counter': currentCount+currentCountTop
+            'Counter': currentCount+currentCountTop,
+            'Selector':'first'
             })
         })
         .then((res) => { return res.json() })
@@ -208,7 +206,7 @@ function getPlaylistData(element,selector){
             let result = element.innerHTML;
             data.forEach((playlist) => {
                 const { id, title, genre } = playlist
-                    result=`<a href="/profile/${id}" class="list-group-item list-group-item-action font-weight-bold">${title}
+                    result=`<a href="/new/${id}" class="list-group-item list-group-item-action font-weight-bold">${title}
                     <div class="badge badge-primary text-wrap text-light bg-dark font-weight-normal" style="width: auto;">${genre}</div>
                     </a>`+result;
                     element.innerHTML = result;
@@ -228,6 +226,22 @@ function loadOnScroll() {
 }
 
 function scrollFixTop(){
+    if (!(loader.scrollHeight > loader.clientHeight)){
+        getPlaylistData(loader,'first');
+        getPlaylistData(loader,'first');
+        getPlaylistData(loader,'first');
+        getPlaylistData(loader,'first');
+        getPlaylistData(loader,'first');
+        getPlaylistData(loader,'first');
+        getPlaylistData(loader,'first');
+        getPlaylistData(loader,'first');
+        getPlaylistData(loader,'first');
+        getPlaylistData(loader,'first');
+        getPlaylistData(loader,'first');
+        getPlaylistData(loader,'first');
+        getPlaylistData(loader,'first');
+        getPlaylistData(loader,'first');
+    }
     this.scrollTo(0,11);
     loader.removeEventListener('mouseover', scrollFixTop)
 }
