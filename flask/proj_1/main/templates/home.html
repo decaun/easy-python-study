@@ -72,6 +72,39 @@ function loadLastSong(){
     }
 }
 
+function getCachedSongData(element,playlistID){
+        fetch('http://127.0.0.1/getsong',{
+            headers: new Headers({
+            'Content-Type': 'application/json',
+            'Playlist-ID': playlistID,
+            'Counter': currentSongCount
+            })
+        })
+        .then((res) => { return res.json() })
+        .then((data) => {
+            let result = element.innerHTML;
+            data.forEach((song) => {
+                const { album, artist, name } = song
+                    result +=
+                    `<tr>
+                        <td>${name}</td>
+                        <td>${album}</td>
+                        <td>${artist}</td>
+                        <td>popularity</td>
+                        <td>danceability</td>
+                        <td>energy</td>
+                        <td>key</td>
+                        <td>tempo</td>
+                        <td>time</td>
+                    </tr>`;
+                    element.innerHTML = result;
+                    });
+                })
+                currentSongCount+=5;
+                
+                
+}
+
 </script>
 {% endblock playlist_block %}
 {% block create_comment %}

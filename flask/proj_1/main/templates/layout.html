@@ -77,11 +77,11 @@
                     <!--<p>Lorem ipsum dolor sit amet</p>-->
                         <div class="tab-content" id="pills-tabContent">
                             <div class="tab-pane fade " id="pills-hot" role="tabpanel" aria-labelledby="pills-hot-tab">
-                                <div class="playlist-scroll rounded">fill me</div>
+                                <div class="playlist-scroll rounded" id="loaderUser" >fill me</div>
                         </div>
 
                         <div class="tab-pane fade" id="pills-new" role="tabpanel" aria-labelledby="pills-new-tab">
-                            <div class="playlist-scroll rounded small" id="loader" ></div>
+                            <div class="playlist-scroll rounded small" id="loaderNew" ></div>
                         </div>
 
                         <div class="tab-pane fade" id="pills-user" role="tabpanel" aria-labelledby="pills-user-tab">
@@ -139,14 +139,20 @@ if (currentTopic==='null') {
 }
 //document.getElementById('pills-new-tab').classList.add('active').setAttribute("aria-selected", true);
 
-const loader=document.getElementById('loader');
-const loaderButton=document.getElementById('pills-new-tab');
+const loaderNew=document.getElementById('loaderNew');
+const loaderNewButton=document.getElementById('pills-new-tab');
+const loaderUser=document.getElementById('loaderUser');
+const loaderUserButton=document.getElementById('pills-user-tab');
+
 const leftPanel=document.getElementById('leftPanel');
 const leftPanelInitialHeight=leftPanel.style.height;
 
 
-loader.addEventListener('scroll', loadOnScroll);
-loader.addEventListener('mouseover', scrollFixTop);
+loaderNew.addEventListener('scroll', loadOnScroll);
+loaderNew.addEventListener('mouseover', scrollFixTop);
+loaderUser.addEventListener('scroll', loadOnScroll);
+loaderUser.addEventListener('mouseover', scrollFixTop);
+
 window.addEventListener('scroll', resizeLeftPanel);
 
 document.getElementById('pills-'+currentTopic+'-tab').classList.add('active');
@@ -154,13 +160,36 @@ document.getElementById('pills-'+currentTopic).classList.add('show');
 document.getElementById('pills-'+currentTopic).classList.add('active');
 
 function loadForMissingScroll(){
-    //if (!(loader.scrollHeight > loader.clientHeight))
+    //if (!(loaderNew.scrollHeight > loaderNew.clientHeight))
 
     for (j = 0; j < 3; j++){
-        getPlaylistData(loader,'last');
+        getPlaylistData(loaderNew,'last');
     }
-    getPlaylistData(loader,'first');
-    loaderButton.removeEventListener('click', loadForMissingScroll)
+    getPlaylistData(loaderNew,'first');
+    loaderNewButton.removeEventListener('click', loadForMissingScroll)
+    getCachedPlaylistData(loaderUser);
+}
+
+function getCachedPlaylistData(element){
+        fetch('http://127.0.0.1/cachedplaylist')
+        .then((res) => { return res.json() })
+        .then((data) => {
+            let result = element.innerHTML;
+            data['items'].forEach((playlist) => {
+                const { id, name, genres, owner } = playlist
+                    console.log(id);
+                    console.log(name);
+                    console.log(genres[0]);
+                    console.log(owner['id']);
+                    console.log(playlist);
+                    result +=
+                    `<a href="#" class="list-group-item list-group-item-action font-weight-bold">${name}
+                    <div class="badge badge-primary text-wrap text-light bg-dark font-weight-normal" style="width: auto;">${genres[0]}</div>
+                    </a>`;
+                    element.innerHTML = result;
+                    });
+                })
+
 }
 
 function getPlaylistData(element,selector){
@@ -226,24 +255,24 @@ function loadOnScroll() {
 }
 
 function scrollFixTop(){
-    if (!(loader.scrollHeight > loader.clientHeight)){
-        getPlaylistData(loader,'first');
-        getPlaylistData(loader,'first');
-        getPlaylistData(loader,'first');
-        getPlaylistData(loader,'first');
-        getPlaylistData(loader,'first');
-        getPlaylistData(loader,'first');
-        getPlaylistData(loader,'first');
-        getPlaylistData(loader,'first');
-        getPlaylistData(loader,'first');
-        getPlaylistData(loader,'first');
-        getPlaylistData(loader,'first');
-        getPlaylistData(loader,'first');
-        getPlaylistData(loader,'first');
-        getPlaylistData(loader,'first');
+    if (!(loaderNew.scrollHeight > loaderNew.clientHeight)){
+        getPlaylistData(loaderNew,'first');
+        getPlaylistData(loaderNew,'first');
+        getPlaylistData(loaderNew,'first');
+        getPlaylistData(loaderNew,'first');
+        getPlaylistData(loaderNew,'first');
+        getPlaylistData(loaderNew,'first');
+        getPlaylistData(loaderNew,'first');
+        getPlaylistData(loaderNew,'first');
+        getPlaylistData(loaderNew,'first');
+        getPlaylistData(loaderNew,'first');
+        getPlaylistData(loaderNew,'first');
+        getPlaylistData(loaderNew,'first');
+        getPlaylistData(loaderNew,'first');
+        getPlaylistData(loaderNew,'first');
     }
     this.scrollTo(0,11);
-    loader.removeEventListener('mouseover', scrollFixTop)
+    loaderNew.removeEventListener('mouseover', scrollFixTop)
 }
 
 function resizeLeftPanel (){
@@ -251,6 +280,18 @@ function resizeLeftPanel (){
     leftPanel.setAttribute("style","height:"+leftPanelInitialHeight);
     }else{
     leftPanel.setAttribute("style","height:"+window.innerHeight+"px");
+    }
+}
+
+
+
+
+function loadCachedOnScroll() {
+    if (this.scrollHeight - this.scrollTop-10 <= this.clientHeight) {
+        getCachedPlaylistData(this,'last');
+    }else if (this.scrollTop<10) {
+        getCachedPlaylistData(this,'first');
+        this.scrollTo(0,11);
     }
 }
 
@@ -265,6 +306,8 @@ function delay(ms) {
             // d = null;  // Prevent memory leak?
         }
     }
+
+
 
   </script>
 </body>

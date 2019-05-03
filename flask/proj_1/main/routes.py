@@ -148,16 +148,18 @@ def Cached_playlist_data(playlist_id=None):
             pass
         return jsonify(spotify.playlists)
 
-'''
-@app.route('/cachedplaylist/<string:playlist_id>',methods=['GET'])
-def Cached_playlist_data(playlist_id=None):
+@app.route('/cachedsong',methods=['GET'])
+def Cached_song_data(playlist_id=None):
     if current_user.is_authenticated:
         try:
-            spotify.call_playlists(current=0, next=50)
-            playlist_selected=Playlist.query.get(playlist_id)
-            spotify.call_songs(playlist_selected.user_id,playlist_selected.spotify_id, current=0, next=50)
-            print(spotify.songs)
+            
+            spotify.call_songs(request.args.get('user_id'),request.args.get('playlist_id'), current=request.args.get('start'), next=request.args.get('count'))
+            print(request.args.get('user_id'))
+            print(request.args.get('playlist_id'))
+            #http://127.0.0.1/cachedsong?user_id=11101365382&&playlist_id=5w6x6mmaVU4sPouB2MBoMN&&start=0&&count=1
         except Exception as e:
             #print(e)
             pass
-'''
+        return jsonify(spotify.songs)
+    pass
+
