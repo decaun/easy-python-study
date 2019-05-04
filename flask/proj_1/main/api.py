@@ -38,11 +38,16 @@ class SpotifyApi():
     def call_songs(self, user_id, spotify_playlist_id, 
                     current=0, next=5):
         self.current_playlist=spotify_playlist_id
-        self.songs=self.active.user_playlist_tracks(user_id, playlist_id=spotify_playlist_id, 
-                                                    fields=None, limit=next, offset=current, 
-                                                    market=None)#limit max 100 need to offset after 100 for next 100
+        if current==0:
+            self.songs=self.active.user_playlist_tracks(user_id, playlist_id=spotify_playlist_id, 
+                                                        fields=None, limit=next, offset=current, 
+                                                        market=None)#limit max 100 need to offset after 100 for next 100
+        else:
+            self.songs=self.active.user_playlist_tracks(user_id, playlist_id=spotify_playlist_id, 
+                                                        fields=None, limit=next, offset=current, 
+                                                        market=None)#limit max 100 need to offset after 100 for next 100
         self.call_features()
-        self.call_tags(spotify_playlist_id)
+        self.call_tags(spotify_playlist_id)#should be removed from here later
         self.insert_tag(user_id)#should be removed from here later
 
     def call_features(self):

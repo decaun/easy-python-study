@@ -205,6 +205,7 @@ function getCachedSongData(){
             data['items'].forEach((song) => {
                 //const { album, artist, name } = song
                 console.log(song);
+                console.log(song.track.artists["0"].name);
                 console.log(song.track.album.name);
                 console.log(song.track.name);
                     });
