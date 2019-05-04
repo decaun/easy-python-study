@@ -125,7 +125,7 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-  <script type="text/javascript" >
+<script type="text/javascript" >
 let currentCount = parseInt(window.location.pathname.match(/\d+$/))-1;
 if (isNaN(currentCount)) {
     currentCount=0;
@@ -183,14 +183,32 @@ function getCachedPlaylistData(element){
                     console.log(owner['id']);
                     console.log(playlist);
                     result +=
-                    `<a href="#" class="list-group-item list-group-item-action font-weight-bold">${name}
+                    `<a href="#" onclick="getCachedSongData();" class="list-group-item list-group-item-action font-weight-bold" id="cachedSongLoader-${id}">${name}
                     <div class="badge badge-primary text-wrap text-light bg-dark font-weight-normal" style="width: auto;">${genres[0]}</div>
                     </a>`;
                     element.innerHTML = result;
+                    //document.getElementById('cachedSongLoader-'+playlist.id).addEventListener("click", getCachedSongData);
+                    
                     });
                 })
-
+        /*.then(() => {let cachedSongLoader=document.getElementById('cachedSongLoader');
+                if (cachedSongLoader){
+                    cachedSongLoader.addEventListener("click", getCachedSongData);
+                }})*/
 }
+
+function getCachedSongData(){
+        fetch('http://127.0.0.1/cachedsong?user_id=11101365382&&playlist_id=5w6x6mmaVU4sPouB2MBoMN&&start=0&&count=1')
+        .then((res) => { return res.json() })
+        .then((data) => {
+            let result = ``;
+            data['items'].forEach((song) => {
+                //const { album, artist, name } = song
+                   console.log(song);
+                    });
+                })   
+}
+
 
 function getPlaylistData(element,selector){
     if (selector ==='last'){
@@ -309,6 +327,39 @@ function delay(ms) {
 
 
 
-  </script>
+
+
+
+
+
+
+/*
+function getCachedSongData(){
+        fetch('http://127.0.0.1/cachedsong')
+        .then((res) => { return res.json() })
+        .then((data) => {
+            let result = ``;
+            data.forEach((song) => {
+                const { album, artist, name } = song
+                    result +=
+                    `<tr>
+                        <td>${name}</td>
+                        <td>${album}</td>
+                        <td>${artist}</td>
+                        <td>popularity</td>
+                        <td>danceability</td>
+                        <td>energy</td>
+                        <td>key</td>
+                        <td>tempo</td>
+                        <td>time</td>
+                    </tr>`;
+                    this.innerHTML = result;
+                    });
+                })   
+}
+*/
+
+
+</script>
 </body>
 </html>
