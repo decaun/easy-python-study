@@ -204,7 +204,9 @@ function getCachedSongData(){
             let result = ``;
             data['items'].forEach((song) => {
                 //const { album, artist, name } = song
-                   console.log(song);
+                console.log(song);
+                console.log(song.track.album.name);
+                console.log(song.track.name);
                     });
                 })   
 }

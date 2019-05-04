@@ -33,6 +33,7 @@ class SpotifyApi():
             self.playlists=self.active.current_user_playlists(limit=next, offset=current)#limit max 50 need to offset after 50 for next 50
             for playlist in range(0,len(self.playlists['items'])):
                     self.playlists['items'][playlist].update({'genres': []})#need refactor (green) issue with overwritten genre objects
+            
 
     def call_songs(self, user_id, spotify_playlist_id, 
                     current=0, next=5):
@@ -49,6 +50,9 @@ class SpotifyApi():
         for song in range(0,len(self.songs['items'])):
             list_of_tracks.append(str(self.songs['items'][song]['track']['id']))
         self.features=self.active.audio_features(tracks = list_of_tracks)
+        for song in range(0,len(self.songs['items'])):
+            self.songs['items'][song].update({'features': self.features[song]})
+
     
     def call_tags(self, spotify_playlist_id):
         track_ids=set()
