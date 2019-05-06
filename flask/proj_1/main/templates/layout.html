@@ -202,6 +202,7 @@ function getCachedSongData(ownerID,playlistSpotifyId,count){
         fetch('http://127.0.0.1/cachedsong?user_id='+ownerID+'&&playlist_id='+playlistSpotifyId+'&&start=0&&count='+count)
         .then((res) => { return res.json() })
         .then((data) => {
+            console.log(data.genres);
             let result = ``;
             data['items'].forEach((song) => {
                 //const { album, artist, name } = song

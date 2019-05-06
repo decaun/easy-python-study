@@ -59,8 +59,10 @@ class SpotifyApi():
         self.features=[]
         for song in range(0,len(self.songs['items'])):
             list_of_tracks.append(str(self.songs['items'][song]['track']['id']))
+            
         for batch in range(0,len(list_of_tracks),100):
             self.features+=self.active.audio_features(tracks = list_of_tracks[batch:batch+100])
+
         for song in range(0,len(self.songs['items'])):
             self.songs['items'][song].update({'features': self.features[song]})
 
@@ -78,6 +80,7 @@ class SpotifyApi():
                     genres[genre]+=1
                 else:
                     genres.update({genre:1})
+
         if genres:
             genres=sorted(genres.items(),key=lambda genres:genres[1],reverse=True)
             genres=[list(genres) for genres in zip(*genres)][0]
