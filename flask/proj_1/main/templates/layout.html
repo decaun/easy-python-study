@@ -176,14 +176,15 @@ function getCachedPlaylistData(element){
         .then((data) => {
             let result = element.innerHTML;
             data['items'].forEach((playlist) => {
-                const { id, name, genres, owner } = playlist
+                const { id, name, genres, owner, tracks } = playlist
                     console.log(id);
                     console.log(name);
                     console.log(genres[0]);
                     console.log(owner['id']);
                     console.log(playlist);
+                    console.log(tracks['total']);
                     result +=
-                    `<a href="#" onclick="getCachedSongData();" class="list-group-item list-group-item-action font-weight-bold" id="cachedSongLoader-${id}">${name}
+                    `<a href="#" onclick="getCachedSongData('${owner['id']}','${id}','${tracks['total']}');" class="list-group-item list-group-item-action font-weight-bold" id="cachedSongLoader-${id}">${name}
                     <div class="badge badge-primary text-wrap text-light bg-dark font-weight-normal" style="width: auto;">${genres[0]}</div>
                     </a>`;
                     element.innerHTML = result;
@@ -197,16 +198,16 @@ function getCachedPlaylistData(element){
                 }})*/
 }
 
-function getCachedSongData(){
-        fetch('http://127.0.0.1/cachedsong?user_id=11101365382&&playlist_id=5w6x6mmaVU4sPouB2MBoMN&&start=0&&count=1')
+function getCachedSongData(ownerID,playlistSpotifyId,count){
+        fetch('http://127.0.0.1/cachedsong?user_id='+ownerID+'&&playlist_id='+playlistSpotifyId+'&&start=0&&count='+count)
         .then((res) => { return res.json() })
         .then((data) => {
             let result = ``;
             data['items'].forEach((song) => {
                 //const { album, artist, name } = song
                 console.log(song);
-                console.log(song.track.artists["0"].name);
-                console.log(song.track.album.name);
+                //console.log(song.track.artists["0"].name);
+                //console.log(song.track.album.name);
                 console.log(song.track.name);
                     });
                 })   

@@ -17,7 +17,7 @@ class SpotifyApi():
         self.active=None
         self.playlists=None
         self.songs=None
-        self.features=None
+        self.features=[]
         self.current_playlist_tags=[]
         self.current_playlist=None
         self.current_auth = oauth2.SpotifyOAuth( SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET,
@@ -43,18 +43,24 @@ class SpotifyApi():
                                                         fields=None, limit=next, offset=current, 
                                                         market=None)#limit max 100 need to offset after 100 for next 100
         else:
-            self.songs=self.active.user_playlist_tracks(user_id, playlist_id=spotify_playlist_id, 
+            current_song_size=len(self.songs['items'])
+            data_holder=self.active.user_playlist_tracks(user_id, playlist_id=spotify_playlist_id, 
                                                         fields=None, limit=next, offset=current, 
                                                         market=None)#limit max 100 need to offset after 100 for next 100
+            for song in range(0,len(data_holder['items'])):
+                self.songs['items'].append(data_holder['items'][song])
+
         self.call_features()
-        self.call_tags(spotify_playlist_id)#should be removed from here later
-        self.insert_tag(user_id)#should be removed from here later
+        #self.call_tags(spotify_playlist_id)#should be removed from here later
+        #self.insert_tag(user_id)#should be removed from here later
 
     def call_features(self):
         list_of_tracks=[]
+        self.features=[]
         for song in range(0,len(self.songs['items'])):
             list_of_tracks.append(str(self.songs['items'][song]['track']['id']))
-        self.features=self.active.audio_features(tracks = list_of_tracks)
+        for batch in range(0,len(list_of_tracks),100):
+            self.features+=self.active.audio_features(tracks = list_of_tracks[batch:batch+100])
         for song in range(0,len(self.songs['items'])):
             self.songs['items'][song].update({'features': self.features[song]})
 
@@ -62,7 +68,8 @@ class SpotifyApi():
     def call_tags(self, spotify_playlist_id):
         track_ids=set()
         for song in range(0,len(self.songs['items'])):
-            track_ids.add(self.songs['items'][song]['track']['album']['artists'][0]['id'])
+            if len(track_ids)<50:#hardcoded limit for tag lookup related artist API
+                track_ids.add(self.songs['items'][song]['track']['album']['artists'][0]['id'])
         artists=self.active.artists(track_ids)
         genres={}
         for track in range(0,len(track_ids)):
@@ -156,11 +163,4 @@ class SpotifyApi():
                     print(e)
                     db.session.rollback()
 
-    @property
-    def user_playlists(self):
-        playlists=self.active.current_user_playlists(limit=1, offset=0)#limit max 50 need to offset after 50 for next 50
-        for playlist in range(0,len(playlists['items'])):
-            print(f"Playlist {playlist}: {playlists['items'][playlist]['name']}")
-            print(f"Playlist ID {playlist}: {playlists['items'][playlist]['id']}")
-        print(f"All total: {playlists['total']}")
 
