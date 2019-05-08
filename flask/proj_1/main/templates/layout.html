@@ -133,6 +133,7 @@ if (isNaN(currentCount)) {
 let currentCountBottom=0;
 let currentCountTop=-1;
 let currentTopic = String(window.location.pathname.match(/([a-z])\w+/g));
+let cachedPlaylistCounter=0;
 
 if (currentTopic==='null') {
     currentTopic='hot';
@@ -150,8 +151,8 @@ const leftPanelInitialHeight=leftPanel.style.height;
 
 loaderNew.addEventListener('scroll', loadOnScroll);
 loaderNew.addEventListener('mouseover', scrollFixTop);
-loaderUser.addEventListener('scroll', loadOnScroll);
-loaderUser.addEventListener('mouseover', scrollFixTop);
+loaderUser.addEventListener('scroll', loadCachedOnScroll);
+
 
 window.addEventListener('scroll', resizeLeftPanel);
 
@@ -164,14 +165,19 @@ function loadForMissingScroll(){
 
     for (j = 0; j < 4; j++){
         getPlaylistData(loaderNew,'last');
+        getCachedPlaylistData(loaderUser);
     }
     getPlaylistData(loaderNew,'first');
     loaderNewButton.removeEventListener('click', loadForMissingScroll)
-    getCachedPlaylistData(loaderUser);
 }
 
 function getCachedPlaylistData(element){
-        fetch('http://127.0.0.1/cachedplaylist')
+        fetch('http://127.0.0.1/cachedplaylist',{
+            headers: new Headers({
+            'Content-Type': 'application/json',
+            'Counter': cachedPlaylistCounter
+            })
+        })
         .then((res) => { return res.json() })
         .then((data) => {
             let result = element.innerHTML;
@@ -192,6 +198,7 @@ function getCachedPlaylistData(element){
                     
                     });
                 })
+                cachedPlaylistCounter+=5;
         /*.then(() => {let cachedSongLoader=document.getElementById('cachedSongLoader');
                 if (cachedSongLoader){
                     cachedSongLoader.addEventListener("click", getCachedSongData);
@@ -295,6 +302,14 @@ function loadOnScroll() {
         this.scrollTo(0,11);
     }
 }
+
+function loadCachedOnScroll() {
+    if (this.scrollHeight - this.scrollTop-10 <= this.clientHeight) {
+        getCachedPlaylistData(this,'first');
+
+    }
+}
+
 
 function scrollFixTop(){
     if (!(loaderNew.scrollHeight > loaderNew.clientHeight)){

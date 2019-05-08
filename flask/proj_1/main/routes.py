@@ -140,9 +140,10 @@ def Post_data():
 @app.route('/cachedplaylist',methods=['GET'])
 def Cached_playlist_data(playlist_id=None):
     if current_user.is_authenticated:
+        print(request.headers['Counter'])
         try:
             spotify.playlists=None
-            spotify.call_playlists(current=0, next=2)
+            spotify.call_playlists(current=int(request.headers['Counter']), next=5)
         except Exception as e:
             #print(e)
             pass
