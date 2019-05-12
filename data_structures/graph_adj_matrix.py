@@ -48,3 +48,6 @@ for edge in edges:
 	g.add_edge(edge[:1], edge[1:])
 
 g.print_graph()
+c = Vertex('C')
+g.add_vertex(c)
+g.print_graph()
