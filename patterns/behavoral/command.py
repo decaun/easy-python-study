@@ -13,6 +13,7 @@ class Switch(object):
         self._history.appendleft(command)
         command.execute()
 
+
 class Command(object):
     """The COMMAND interface"""
     def __init__(self, obj):
@@ -21,15 +22,18 @@ class Command(object):
     def execute(self):
         raise NotImplementedError
 
+
 class TurnOnCommand(Command):
     """The COMMAND for turning on the light"""
     def execute(self):
         self._obj.turn_on()
 
+
 class TurnOffCommand(Command):
     """The COMMAND for turning off the light"""
     def execute(self):
         self._obj.turn_off()
+
 
 class Light(object):
     """The RECEIVER class"""
@@ -38,6 +42,7 @@ class Light(object):
 
     def turn_off(self):
         print("The light is off")
+
 
 class LightSwitchClient(object):
     """The CLIENT class"""
@@ -57,6 +62,7 @@ class LightSwitchClient(object):
             self._switch.execute(TurnOffCommand(self._lamp))
         else:
             print("Argument 'ON' or 'OFF' is required.")
+
 
 # Execute if this file is run as a script and not imported as a module
 if __name__ == "__main__":

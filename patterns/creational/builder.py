@@ -14,8 +14,8 @@ class Car(object):
         )
 
 
-class Builder:
-    __metaclass__ = ABCMeta
+class Builder(metaclass = ABCMeta):
+
 
     @abstractmethod
     def set_wheels(self, value):
@@ -61,4 +61,5 @@ class CarBuilderDirector(object):
 
 
 car = CarBuilderDirector.construct()
+
 print(car)
