@@ -210,10 +210,22 @@ function setCachedPlaylistTitle(playlistName,playlistGenres){
 }
 
 function getCachedSongData(ownerID,playlistSpotifyId,count,playlistName,element){
+        allPlaylists = document.querySelectorAll('[id^="cachedSongLoader-"]');
+        allPlaylists.forEach(function(playList){
+            playList.classList.add('text-dark');
+            playList.classList.add('bg-light');
+            playList.classList.remove('text-light');
+            playList.classList.remove('bg-dark');
+            });
+               
+        selectedPlaylist = document.getElementById('cachedSongLoader-'+playlistSpotifyId);
+        selectedPlaylist.classList.add('text-light');
+        selectedPlaylist.classList.add('bg-dark');
+        selectedPlaylist.classList.remove('text-dark');
+        selectedPlaylist.classList.remove('bg-light');
         fetch('http://127.0.0.1/cachedsong?user_id='+ownerID+'&&playlist_id='+playlistSpotifyId+'&&start=0&&count='+count)
         .then((res) => { return res.json() })
         .then((data) => {
-            
             console.log(data.genres);
             setCachedPlaylistTitle(playlistName,data.genres);
             let result = ``;
@@ -237,7 +249,7 @@ function getCachedSongData(ownerID,playlistSpotifyId,count,playlistName,element)
                 </tr>`;
                 element.innerHTML = result;
                     });
-                })   
+                })
 }
 
 
