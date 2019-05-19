@@ -160,12 +160,13 @@ def Cached_song_data(playlist_id=None):
                 print(counter)
                 spotify.call_songs(request.args.get('user_id'),request.args.get('playlist_id'), current=counter, next=100)#max range for api hardcoded as 100
 
-        print(request.args.get('user_id'))
-        print(request.args.get('playlist_id'))
+        #print(request.args.get('user_id'))
+        #print(request.args.get('playlist_id'))
         spotify.call_tags(request.args.get('playlist_id'))
-        print(spotify.current_playlist_tags)
+        #print(spotify.current_playlist_tags)
         spotify.songs.update({'genres': spotify.current_playlist_tags})
-
+        spotify.set_current_playlist(request.args.get('user_id'),request.args.get('playlist_id'))
+        #print(spotify.current_playlist)
 
         return jsonify(spotify.songs)
     pass
