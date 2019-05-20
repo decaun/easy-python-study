@@ -121,11 +121,10 @@ class SpotifyApi():
 
     def insert_current_playlist(self,local_user_id):
         #not tested
-        playlist_to_db=Playlist(spotify_id=self.current_playlist['items'][0]['id'], 
-                            title=self.current_playlist['items'][0]['name'],
+        playlist_to_db=Playlist(spotify_id=self.current_playlist['id'], 
+                            title=self.current_playlist['name'],
                             user_id=local_user_id)
-        playlist_from_db=Playlist.query.filter_by(spotify_id=playlist_to_db.spotify_id,
-                                                user_id=local_user_id).first()
+        playlist_from_db=Playlist.query.filter_by(spotify_id=playlist_to_db.spotify_id).first()
         #print(playlist)
         if playlist_from_db!=None:
             pass

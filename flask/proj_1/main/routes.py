@@ -41,6 +41,7 @@ def Topic(playlist_id=None,topic=None):
     posts = playlist_selected.posts
     form = PostForm()
     if form.validate_on_submit():
+        spotify.insert_current_playlist(me['id'])
         post = Post(title = 'test', content = form.content.data, user_id = 1, playlist_id = playlist_selected.id )
         db.session.add(post)
         db.session.commit()
@@ -120,7 +121,7 @@ def Song_data():
                                 int(request.headers['Counter']), 5+int(request.headers['Counter'])).all()
     song_schema = SongSchema(many=True)
     output = song_schema.dump(song_call).data
-   
+    
     return jsonify(output)
 
 @app.route('/getpost',methods=['GET'])

@@ -210,6 +210,7 @@ function setCachedPlaylistTitle(playlistName,playlistGenres){
 }
 
 function getCachedSongData(ownerID,playlistSpotifyId,count,playlistName,element){
+        postLoader.innerHTML=``;
         allPlaylists = document.querySelectorAll('[id^="cachedSongLoader-"]');
         allPlaylists.forEach(function(playList){
             playList.classList.add('text-dark');
