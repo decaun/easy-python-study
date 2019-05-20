@@ -42,7 +42,7 @@ def Topic(playlist_id=None,topic=None):
     form = PostForm()
     if form.validate_on_submit():
         spotify.insert_current_playlist(me['id'])
-        post = Post(title = 'test', content = form.content.data, user_id = 1, playlist_id = playlist_selected.id )
+        post = Post(title = 'test', content = form.content.data, user_id = 1, spotify_id = playlist_selected.id )
         db.session.add(post)
         db.session.commit()
         return redirect(url_for('Topic', playlist_id=playlist_selected.id))
