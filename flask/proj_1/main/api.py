@@ -119,24 +119,23 @@ class SpotifyApi():
                     print(e)
                     db.session.rollback()
 
-    def insert_playlist(self,local_user_id,spotify_playlist_id):
-        #for playlist in range(0,len(self.playlists['items'])):
-        #    playlist_to_db=Playlist(spotify_id=self.playlists['items'][playlist]['id'], 
-        #                        title=self.playlists['items'][playlist]['name'],
-        #                        user_id=user_id)
-        #    playlist_from_db=Playlist.query.filter_by(spotify_id=playlist_to_db.spotify_id,
-        #                                            user_id=user_id).first()
-        #    #print(playlist)
-        #    if playlist_from_db!=None:
-        #        pass
-        #    else:
-        #        try:
-        #            db.session.add(playlist_to_db)
-        #            db.session.commit()
-        #        except Exception as e:
-        #            print(e)
-        #            db.session.rollback()
-        pass
+    def insert_current_playlist(self,local_user_id):
+        #not tested
+        playlist_to_db=Playlist(spotify_id=self.current_playlist['items'][0]['id'], 
+                            title=self.current_playlist['items'][0]['name'],
+                            user_id=local_user_id)
+        playlist_from_db=Playlist.query.filter_by(spotify_id=playlist_to_db.spotify_id,
+                                                user_id=local_user_id).first()
+        #print(playlist)
+        if playlist_from_db!=None:
+            pass
+        else:
+            try:
+                db.session.add(playlist_to_db)
+                db.session.commit()
+            except Exception as e:
+                print(e)
+                db.session.rollback()
 
 
     def insert_songs(self, playlist_id):
