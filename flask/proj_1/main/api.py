@@ -139,6 +139,7 @@ class SpotifyApi():
 
 
     def insert_songs(self, playlist_id):
+        #not tested
         for song in range(0,len(self.songs['items'])):
             song_to_db=Song(order = song,
                         spotify_id = self.songs['items'][song]['track']['id'], 
@@ -147,18 +148,18 @@ class SpotifyApi():
                         artist = self.songs['items'][song]['track']['album']['artists'][0]['name'],
                         popularity = self.songs['items'][song]['track']['popularity'],
                         playlist_id = playlist_id,
-                        danceability = self.features[song]['danceability'],
-                        energy = self.features[song]['energy'],
-                        key = self.features[song]['key'],
-                        mode = self.features[song]['mode'],
-                        speechiness = self.features[song]['speechiness'],
-                        acousticness =self.features[song]['acousticness'],
-                        instrumentalness =self.features[song]['instrumentalness'],
-                        liveness = self.features[song]['liveness'],
-                        valence = self.features[song]['valence'],
-                        tempo = self.features[song]['tempo'],
-                        uri = self.features[song]['uri'],
-                        time_signature = self.features[song]['time_signature'])
+                        danceability = self.songs['items'][song]['danceability'],#alternative-danceability = self.features[song]['danceability'],
+                        energy = self.songs['items'][song]['energy'],
+                        key = self.songs['items'][song]['key'],
+                        mode = self.songs['items'][song]['mode'],
+                        speechiness = self.songs['items'][song]['speechiness'],
+                        acousticness =self.songs['items'][song]['acousticness'],
+                        instrumentalness =self.songs['items'][song]['instrumentalness'],
+                        liveness = self.songs['items'][song]['liveness'],
+                        valence = self.songs['items'][song]['valence'],
+                        tempo = self.songs['items'][song]['tempo'],
+                        uri = self.songs['items'][song]['uri'],
+                        time_signature = self.songs['items'][song]['time_signature'])
 
             song_from_db=Song.query.filter_by(spotify_id=song_to_db.spotify_id,
                                                 playlist_id=playlist_id).first()
