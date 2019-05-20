@@ -19,12 +19,12 @@ def Topic(playlist_id=None,topic=None):
             print(e)
             logout_user()
 
-        try:
-            spotify.call_playlists(current=0, next=50)
-            spotify.insert_playlists(me['id'])
-        except Exception as e:
-            #print(e)
-            pass
+        #try:
+        #    spotify.call_playlists(current=0, next=50)
+        #    spotify.insert_playlists(me['id'])
+        #except Exception as e:
+        #    #print(e)
+        #    pass
     else:
         print("Non-authenticated user")
     playlists = Playlist.query.all()
@@ -34,10 +34,10 @@ def Topic(playlist_id=None,topic=None):
         playlist_selected = Playlist.query.first()
     else:
         playlist_selected=Playlist.query.get(playlist_id)
-        if current_user.is_authenticated:
-            spotify.call_songs(playlist_selected.user_id,playlist_selected.spotify_id, current=0, next=50)
-        #    print(spotify.songs)
-            spotify.insert_songs(playlist_id)
+        #if current_user.is_authenticated:
+            #spotify.call_songs(playlist_selected.user_id,playlist_selected.spotify_id, current=0, next=50)
+            #print(spotify.songs)
+            #spotify.insert_songs(playlist_id)
     posts = playlist_selected.posts
     form = PostForm()
     if form.validate_on_submit():
