@@ -41,11 +41,15 @@ def Topic(playlist_id=None,topic=None):
     posts = playlist_selected.posts
     form = PostForm()
     if form.validate_on_submit():
-        spotify.insert_current_playlist(me['id'])
-        post = Post(title = 'test', content = form.content.data, user_id = 1, spotify_id = playlist_selected.id )
+        try:
+            spotify.insert_current_playlist(me['id'])
+            spotify.insert_songs(spotify.current_playlist['local_id'])
+        except:
+            pass
+        post = Post(title = 'test', content = form.content.data, user_id = 1, playlist_id = spotify.current_playlist['local_id'] )
         db.session.add(post)
         db.session.commit()
-        return redirect(url_for('Topic', playlist_id=playlist_selected.id))
+        return redirect(url_for('Topic', playlist_id=spotify.current_playlist['local_id']))
     return render_template('home.html',form=form, playlists = playlists,playlist_selected = playlist_selected, spotify=spotify)
 
 @app.route('/login')
@@ -121,6 +125,8 @@ def Song_data():
                                 int(request.headers['Counter']), 5+int(request.headers['Counter'])).all()
     song_schema = SongSchema(many=True)
     output = song_schema.dump(song_call).data
+    if int(request.headers['Counter'])==0:
+        spotify.current_playlist={'local_id':int(request.headers['Playlist-ID'])}
     
     return jsonify(output)
 
@@ -166,7 +172,7 @@ def Cached_song_data(playlist_id=None):
         spotify.call_tags(request.args.get('playlist_id'))
         #print(spotify.current_playlist_tags)
         spotify.songs.update({'genres': spotify.current_playlist_tags})
-        spotify.set_current_playlist(request.args.get('user_id'),request.args.get('playlist_id'))
+        spotify.set_user_current_playlist(request.args.get('user_id'),request.args.get('playlist_id'))
         #print(spotify.current_playlist)
 
         return jsonify(spotify.songs)

@@ -37,13 +37,13 @@ class SpotifyApi():
 
     def call_songs(self, user_id, spotify_playlist_id, 
                     current=0, next=5):
-        self.current_playlist=spotify_playlist_id
+        #self.current_playlist=spotify_playlist_id
         if current==0:
             self.songs=self.active.user_playlist_tracks(user_id, playlist_id=spotify_playlist_id, 
                                                         fields=None, limit=next, offset=current, 
                                                         market=None)#limit max 100 need to offset after 100 for next 100
         else:
-            current_song_size=len(self.songs['items'])
+            #current_song_size=len(self.songs['items'])
             data_holder=self.active.user_playlist_tracks(user_id, playlist_id=spotify_playlist_id, 
                                                         fields=None, limit=next, offset=current, 
                                                         market=None)#limit max 100 need to offset after 100 for next 100
@@ -90,7 +90,7 @@ class SpotifyApi():
             self.current_playlist_tags=genres
 
     def insert_tag(self,user_id):
-        tag_to_db=Playlist.query.filter_by(spotify_id=self.current_playlist,user_id=user_id).first()
+        tag_to_db=Playlist.query.filter_by(spotify_id=self.current_playlist['id'],user_id=user_id).first()
         if tag_to_db.genre==None:
             try:
                 tag_to_db.genre=self.current_playlist_tags[0]
@@ -132,6 +132,8 @@ class SpotifyApi():
             try:
                 db.session.add(playlist_to_db)
                 db.session.commit()
+                db.session.refresh(playlist_to_db)
+                self.current_playlist={'local_id':playlist_to_db.id}
             except Exception as e:
                 print(e)
                 db.session.rollback()
@@ -147,18 +149,18 @@ class SpotifyApi():
                         artist = self.songs['items'][song]['track']['album']['artists'][0]['name'],
                         popularity = self.songs['items'][song]['track']['popularity'],
                         playlist_id = playlist_id,
-                        danceability = self.songs['items'][song]['danceability'],#alternative-danceability = self.features[song]['danceability'],
-                        energy = self.songs['items'][song]['energy'],
-                        key = self.songs['items'][song]['key'],
-                        mode = self.songs['items'][song]['mode'],
-                        speechiness = self.songs['items'][song]['speechiness'],
-                        acousticness =self.songs['items'][song]['acousticness'],
-                        instrumentalness =self.songs['items'][song]['instrumentalness'],
-                        liveness = self.songs['items'][song]['liveness'],
-                        valence = self.songs['items'][song]['valence'],
-                        tempo = self.songs['items'][song]['tempo'],
-                        uri = self.songs['items'][song]['uri'],
-                        time_signature = self.songs['items'][song]['time_signature'])
+                        danceability = self.songs['items'][song]['features']['danceability'],#alternative-danceability = self.features[song]['features']['danceability'],
+                        energy = self.songs['items'][song]['features']['energy'],
+                        key = self.songs['items'][song]['features']['key'],
+                        mode = self.songs['items'][song]['features']['mode'],
+                        speechiness = self.songs['items'][song]['features']['speechiness'],
+                        acousticness =self.songs['items'][song]['features']['acousticness'],
+                        instrumentalness =self.songs['items'][song]['features']['instrumentalness'],
+                        liveness = self.songs['items'][song]['features']['liveness'],
+                        valence = self.songs['items'][song]['features']['valence'],
+                        tempo = self.songs['items'][song]['features']['tempo'],
+                        uri = self.songs['items'][song]['features']['uri'],
+                        time_signature = self.songs['items'][song]['features']['time_signature'])
 
             song_from_db=Song.query.filter_by(spotify_id=song_to_db.spotify_id,
                                                 playlist_id=playlist_id).first()
@@ -184,5 +186,5 @@ class SpotifyApi():
                     print(e)
                     db.session.rollback()
 
-    def set_current_playlist(self,spotify_user_id,spotify_playlist_id):
+    def set_user_current_playlist(self,spotify_user_id,spotify_playlist_id):
         self.current_playlist=self.active.user_playlist(spotify_user_id, playlist_id=spotify_playlist_id, fields=None)
