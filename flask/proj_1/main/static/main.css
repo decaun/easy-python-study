@@ -132,6 +132,7 @@ body {
 
 .playlist-scroll {
   height: 100%;
+  display: block;
   position: absolute;
   overflow-y: scroll;
   top: 20;
