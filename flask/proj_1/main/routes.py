@@ -41,6 +41,11 @@ def Topic(playlist_id=None,topic=None):
         return redirect(url_for('Topic', playlist_id=spotify.current_playlist['local_id']))
     return render_template('home.html',form=form)
 
+@app.route('/logout')
+def Logout():
+    logout_user()
+    return redirect(url_for('Topic'))
+
 @app.route('/login')
 def Login():
     try:
@@ -81,10 +86,16 @@ def Auth():
                 db.session.commit()
                 login_user(real_user, remember=True)
             except Exception as e:
-                user=User(spotify_id=me['id'], username=me['display_name'],email=me['email'],image_url=me['images'][0]['url'],access_token=access_token)
-                db.session.rollback()
-                db.session.add(user)
-                db.session.commit()
+                try:
+                    user=User(spotify_id=me['id'], username=me['display_name'],email=me['email'],image_url=me['images'][0]['url'],access_token=access_token)
+                    db.session.rollback()
+                    db.session.add(user)
+                    db.session.commit()
+                except:
+                    user=User(spotify_id=me['id'], username=me['display_name'],email=me['email'],access_token=access_token)
+                    db.session.rollback()
+                    db.session.add(user)
+                    db.session.commit()
                 login_user(user, remember=True)
             
         #next_page = request.args.get('next')

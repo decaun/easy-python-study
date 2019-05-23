@@ -1,6 +1,7 @@
 '''
 from main import db
 db.create_all()
+#above is necessary manually to init db
 from main.models import User,Post,Playlist,Song
 
 
@@ -75,7 +76,7 @@ class User(db.Model, UserMixin):
         spotify_id = db.Column(db.String(22), unique=True, nullable=False)
         username = db.Column(db.String(30), unique=True, nullable=False)
         email = db.Column(db.String(30), unique=True, nullable=False)
-        image_url = db.Column(db.String(120), nullable=False)
+        image_url = db.Column(db.String(120))
         access_token = db.Column(db.String(330), nullable=False)
         playlist = db.relationship('Playlist', backref='author', lazy=True)
         posts = db.relationship('Post', backref='author', lazy=True)
