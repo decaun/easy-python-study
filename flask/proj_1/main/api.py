@@ -88,9 +88,10 @@ class SpotifyApi():
                 if self.playlists['items'][playlist]['id']==spotify_playlist_id:
                     self.playlists['items'][playlist]['genres']=genres
             self.current_playlist_tags=genres
+            #print(self.current_playlist_tags)
 
-    def insert_tag(self,user_id):
-        tag_to_db=Playlist.query.filter_by(spotify_id=self.current_playlist['id'],user_id=user_id).first()
+    def insert_tag(self):
+        tag_to_db=Playlist.query.filter_by(spotify_id=self.current_playlist['id']).first()
         if tag_to_db.genre==None:
             try:
                 tag_to_db.genre=self.current_playlist_tags[0]
@@ -123,7 +124,8 @@ class SpotifyApi():
         #not tested
         playlist_to_db=Playlist(spotify_id=self.current_playlist['id'], 
                             title=self.current_playlist['name'],
-                            user_id=local_user_id)
+                            user_id=local_user_id,
+                            genre=self.current_playlist_tags[0])
         playlist_from_db=Playlist.query.filter_by(spotify_id=playlist_to_db.spotify_id).first()
         #print(playlist)
         if playlist_from_db!=None:

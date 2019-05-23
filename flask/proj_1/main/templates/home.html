@@ -46,18 +46,18 @@ function getSongData(element,playlistID){
         .then((data) => {
             let result = element.innerHTML;
             data.forEach((song) => {
-                const { album, artist, name } = song
+                const { album, artist, name, popularity, danceability, energy, key, tempo, time_signature } = song
                     result +=
                     `<tr>
                         <td>${name}</td>
                         <td>${album}</td>
                         <td>${artist}</td>
-                        <td>popularity</td>
-                        <td>danceability</td>
-                        <td>energy</td>
-                        <td>key</td>
-                        <td>tempo</td>
-                        <td>time</td>
+                        <td>${popularity}</td>
+                        <td>${danceability}</td>
+                        <td>${energy}</td>
+                        <td>${key}</td>
+                        <td>${tempo}</td>
+                        <td>${time_signature}</td>
                     </tr>`;
                     element.innerHTML = result;
                     });

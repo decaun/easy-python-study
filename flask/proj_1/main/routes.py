@@ -27,18 +27,7 @@ def Topic(playlist_id=None,topic=None):
         #    pass
     else:
         print("Non-authenticated user")
-    playlists = Playlist.query.all()
 
-    if playlist_id==None:
-        #playlist_selected = Playlist.query.get(1)
-        playlist_selected = Playlist.query.first()
-    else:
-        playlist_selected=Playlist.query.get(playlist_id)
-        #if current_user.is_authenticated:
-            #spotify.call_songs(playlist_selected.user_id,playlist_selected.spotify_id, current=0, next=50)
-            #print(spotify.songs)
-            #spotify.insert_songs(playlist_id)
-    posts = playlist_selected.posts
     form = PostForm()
     if form.validate_on_submit():
         try:
@@ -46,11 +35,11 @@ def Topic(playlist_id=None,topic=None):
             spotify.insert_songs(spotify.current_playlist['local_id'])
         except:
             pass
-        post = Post(title = 'test', content = form.content.data, user_id = 1, playlist_id = spotify.current_playlist['local_id'] )
+        post = Post(title = 'test', content = form.content.data, user_id = current_user.id, playlist_id = spotify.current_playlist['local_id'] )
         db.session.add(post)
         db.session.commit()
         return redirect(url_for('Topic', playlist_id=spotify.current_playlist['local_id']))
-    return render_template('home.html',form=form, playlists = playlists,playlist_selected = playlist_selected, spotify=spotify)
+    return render_template('home.html',form=form)
 
 @app.route('/login')
 def Login():
@@ -120,7 +109,9 @@ def Playlist_data():
 
 @app.route('/getsong',methods=['GET'])
 def Song_data():
-    song_call = Song.query.with_entities(Song.name, Song.album, Song.artist).filter_by(
+    song_call = Song.query.with_entities(Song.name, Song.album, Song.artist, Song.popularity,
+                                Song.danceability, Song.energy, Song.key, Song.tempo,
+                                Song.time_signature).filter_by(
                                 playlist_id=int(request.headers['Playlist-ID'])).slice(
                                 int(request.headers['Counter']), 5+int(request.headers['Counter'])).all()
     song_schema = SongSchema(many=True)
@@ -170,6 +161,7 @@ def Cached_song_data(playlist_id=None):
         #print(request.args.get('user_id'))
         #print(request.args.get('playlist_id'))
         spotify.call_tags(request.args.get('playlist_id'))
+        
         #print(spotify.current_playlist_tags)
         spotify.songs.update({'genres': spotify.current_playlist_tags})
         spotify.set_user_current_playlist(request.args.get('user_id'),request.args.get('playlist_id'))

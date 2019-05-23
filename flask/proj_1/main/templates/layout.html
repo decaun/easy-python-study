@@ -177,16 +177,14 @@ function getCachedPlaylistData(element){
         .then((data) => {
             let result = element.innerHTML;
             data['items'].forEach((playlist) => {
-                const { id, name, genres, owner, tracks } = playlist
+                const { id, name, owner, tracks } = playlist
                     console.log(id);
                     console.log(name);
-                    console.log(genres[0]);
                     console.log(owner['id']);
                     console.log(playlist);
                     console.log(tracks['total']);
                     result +=
                     `<a href="#" onclick="getCachedSongData('${owner['id']}','${id}','${tracks['total']}','${name}',songLoader);" class="list-group-item list-group-item-action font-weight-bold" id="cachedSongLoader-${id}">${name}
-                    <div class="badge badge-primary text-wrap text-light bg-dark font-weight-normal" style="width: auto;">${genres[0]}</div>
                     </a>`;
                     element.innerHTML = result;
                     //document.getElementById('cachedSongLoader-'+playlist.id).addEventListener("click", getCachedSongData);
