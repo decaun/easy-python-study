@@ -1,12 +1,10 @@
 altgraph==0.16.1
 asn1crypto==0.24.0
 astroid==2.1.0
-certifi==2018.8.24
+certifi
 cffi==1.11.5
 chardet==3.0.4
 Click==7.0
-colorama==0.4.1
-conda==4.5.11
 cryptography==2.3.1
 dominate==2.3.5
 Flask==1.0.2
@@ -26,7 +24,6 @@ MarkupSafe==1.1.1
 marshmallow==2.19.2
 marshmallow-sqlalchemy==0.16.2
 mccabe==0.6.1
-menuinst==1.4.14
 numpy==1.16.2
 pandas==0.24.1
 pathlib==1.0.1
