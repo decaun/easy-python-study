@@ -136,6 +136,7 @@ class SpotifyApi():
                 db.session.commit()
                 db.session.refresh(playlist_to_db)
                 self.current_playlist={'local_id':playlist_to_db.id}
+                print("ID assigned by ORM :" + str(playlist_to_db.id))
             except Exception as e:
                 print(e)
                 db.session.rollback()
