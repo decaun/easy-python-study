@@ -1,3 +1,4 @@
 {
-    "svn.ignoreMissingSvnWarning": true
+    "svn.ignoreMissingSvnWarning": true,
+    "python.pythonPath": "/home/student/.conda/envs/env_1/bin/python"
 }
