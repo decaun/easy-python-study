@@ -1,5 +1,6 @@
-#https://www.youtube.com/watch?v=bK6lijUbvms
-#https://github.com/vprusso/youtube_tutorials/blob/master/data_structures/trees/binary_trees
+# https://www.youtube.com/watch?v=bK6lijUbvms
+# https://github.com/vprusso/youtube_tutorials/blob/master/data_structures/trees/binary_trees
+
 
 class Stack(object):
     def __init__(self):
@@ -7,14 +8,14 @@ class Stack(object):
 
     def __len__(self):
         return self.size()
-     
+
     def size(self):
         return len(self.items)
 
     def push(self, item):
         self.items.append(item)
 
-    def pop(self):  
+    def pop(self):
         if not self.is_empty():
             return self.items.pop()
 
@@ -30,7 +31,8 @@ class Stack(object):
         for i in range(len(self.items)):
             s += str(self.items[i].value) + "-"
         return s
-        
+
+
 class Queue(object):
     def __init__(self):
         self.items = []
@@ -109,7 +111,7 @@ class BinaryTree(object):
 
     def levelorder_print(self, start):
         if start is None:
-            return 
+            return
 
         queue = Queue()
         queue.enqueue(start)
@@ -128,12 +130,11 @@ class BinaryTree(object):
 
     def reverse_levelorder_print(self, start):
         if start is None:
-            return 
+            return
 
         queue = Queue()
         stack = Stack()
         queue.enqueue(start)
-
 
         traversal = ""
         while len(queue) > 0:
@@ -145,13 +146,12 @@ class BinaryTree(object):
                 queue.enqueue(node.right)
             if node.left:
                 queue.enqueue(node.left)
-        
+
         while len(stack) > 0:
             node = stack.pop()
             traversal += str(node.value) + "-"
 
         return traversal
-
 
 
 tree = BinaryTree(1)
@@ -161,4 +161,3 @@ tree.root.left.left = Node(4)
 tree.root.left.right = Node(5)
 
 print(tree.print_tree("reverse_levelorder"))
-

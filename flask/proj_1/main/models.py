@@ -59,9 +59,10 @@ pip install flask-dance[sqla]
 '''
 
 
-from main import db,ma,login_manager
+from main import db, ma, login_manager
 from datetime import datetime
 from flask_login import UserMixin
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -71,91 +72,97 @@ def load_user(user_id):
         print("user id not found")
         return None
 
+
 class User(db.Model, UserMixin):
-        id = db.Column(db.Integer, primary_key=True)
-        spotify_id = db.Column(db.String(22), unique=True, nullable=False)
-        username = db.Column(db.String(30), unique=True, nullable=False)
-        email = db.Column(db.String(30), unique=True, nullable=False)
-        image_url = db.Column(db.String(120))
-        access_token = db.Column(db.String(330), nullable=False)
-        playlist = db.relationship('Playlist', backref='author', lazy=True)
-        posts = db.relationship('Post', backref='author', lazy=True)
-        
+    id = db.Column(db.Integer, primary_key=True)
+    spotify_id = db.Column(db.String(22), unique=True, nullable=False)
+    username = db.Column(db.String(30), unique=True, nullable=False)
+    email = db.Column(db.String(30), unique=True, nullable=False)
+    image_url = db.Column(db.String(120))
+    access_token = db.Column(db.String(330), nullable=False)
+    playlist = db.relationship('Playlist', backref='author', lazy=True)
+    posts = db.relationship('Post', backref='author', lazy=True)
 
-        def __repr__(self):
-            return f"User('{self.id}', {self.username}', '{self.email}')"
-
+    def __repr__(self):
+        return f"User('{self.id}', {self.username}', '{self.email}')"
 
 
 class Playlist(db.Model):
-        __table_args__ = (
+    __table_args__ = (
         db.UniqueConstraint('user_id', 'spotify_id'),
-        )
-        id = db.Column(db.Integer, primary_key=True)
-        spotify_id = db.Column(db.String(22), nullable=False)
-        title = db.Column(db.String(100), nullable=False)
-        genre = db.Column(db.String(25))
-        date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-        user_id = db.Column(db.String(30), db.ForeignKey('user.id'), nullable=False)
-        posts = db.relationship('Post', backref='topic', lazy=True)
-        songs = db.relationship('Song', backref='topic', lazy=True)
+    )
+    id = db.Column(db.Integer, primary_key=True)
+    spotify_id = db.Column(db.String(22), nullable=False)
+    title = db.Column(db.String(100), nullable=False)
+    genre = db.Column(db.String(25))
+    date_posted = db.Column(db.DateTime, nullable=False,
+                            default=datetime.utcnow)
+    user_id = db.Column(db.String(30), db.ForeignKey(
+        'user.id'), nullable=False)
+    posts = db.relationship('Post', backref='topic', lazy=True)
+    songs = db.relationship('Song', backref='topic', lazy=True)
 
-        def __repr__(self):
-            return f"('id',{self.id}),('title',{self.title}), ('date',{self.date_posted})"
+    def __repr__(self):
+        return f"('id',{self.id}),('title',{self.title}), ('date',{self.date_posted})"
 
 
 class Post(db.Model):
-        id = db.Column(db.Integer, primary_key=True)
-        title = db.Column(db.String(100), nullable=False)
-        date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-        content = db.Column(db.Text, nullable=False)
-        user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-        song_id = db.Column(db.Integer, db.ForeignKey('song.id'), nullable=True)
-        playlist_id = db.Column(db.Integer, db.ForeignKey('playlist.id'), nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    date_posted = db.Column(db.DateTime, nullable=False,
+                            default=datetime.utcnow)
+    content = db.Column(db.Text, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    song_id = db.Column(db.Integer, db.ForeignKey('song.id'), nullable=True)
+    playlist_id = db.Column(db.Integer, db.ForeignKey(
+        'playlist.id'), nullable=False)
 
-        def __repr__(self):
-            return f"Post('{self.title}', '{self.date_posted}')"
+    def __repr__(self):
+        return f"Post('{self.title}', '{self.date_posted}')"
+
 
 class Song(db.Model):
-        __table_args__ = (
+    __table_args__ = (
         db.UniqueConstraint('order', 'spotify_id', 'playlist_id'),
-        )
-        id = db.Column(db.Integer, primary_key=True)
-        order = db.Column(db.Integer, nullable=False)
-        spotify_id = db.Column(db.String(22), nullable=False)
-        name = db.Column(db.String(100), nullable=False)
-        album = db.Column(db.String(100), nullable=False)
-        artist = db.Column(db.String(100), nullable=False)
-        popularity = db.Column(db.Integer, nullable=False)
-        posts = db.relationship('Post', backref='song', lazy=True)
-        playlist_id = db.Column(db.Integer, db.ForeignKey('playlist.id'), nullable=False)
+    )
+    id = db.Column(db.Integer, primary_key=True)
+    order = db.Column(db.Integer, nullable=False)
+    spotify_id = db.Column(db.String(22), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    album = db.Column(db.String(100), nullable=False)
+    artist = db.Column(db.String(100), nullable=False)
+    popularity = db.Column(db.Integer, nullable=False)
+    posts = db.relationship('Post', backref='song', lazy=True)
+    playlist_id = db.Column(db.Integer, db.ForeignKey(
+        'playlist.id'), nullable=False)
 
-        danceability = db.Column(db.Float)
-        energy = db.Column(db.Float)
-        key = db.Column(db.Integer)
-        mode = db.Column(db.Integer)
-        speechiness = db.Column(db.Float)
-        acousticness = db.Column(db.Float)
-        instrumentalness = db.Column(db.Float)
-        liveness = db.Column(db.Float)
-        valence = db.Column(db.Float)
-        tempo = db.Column(db.Float)
-        uri = db.Column(db.String(36))
-        time_signature = db.Column(db.Integer)
-        
+    danceability = db.Column(db.Float)
+    energy = db.Column(db.Float)
+    key = db.Column(db.Integer)
+    mode = db.Column(db.Integer)
+    speechiness = db.Column(db.Float)
+    acousticness = db.Column(db.Float)
+    instrumentalness = db.Column(db.Float)
+    liveness = db.Column(db.Float)
+    valence = db.Column(db.Float)
+    tempo = db.Column(db.Float)
+    uri = db.Column(db.String(36))
+    time_signature = db.Column(db.Integer)
 
-        def __repr__(self):
-            return f"Song('{self.name}', '{self.album}')"
-        
+    def __repr__(self):
+        return f"Song('{self.name}', '{self.album}')"
+
+
 class PlaylistSchema(ma.ModelSchema):
     class Meta:
         model = Playlist
+
 
 class SongSchema(ma.ModelSchema):
     class Meta:
         model = Song
 
+
 class PostSchema(ma.ModelSchema):
     class Meta:
         fields = ("username", "title", "content", "date_posted", "user_id")
-

@@ -1,8 +1,9 @@
-#https://github.com/joeyajames/Python/blob/master/MaxHeap.py
-#https://www.youtube.com/watch?v=GnKHVXv_rlQ
+# https://github.com/joeyajames/Python/blob/master/MaxHeap.py
+# https://www.youtube.com/watch?v=GnKHVXv_rlQ
 # Python MaxHeap
 # public functions: push, peek, pop
 # private functions: __swap, __floatUp, __bubbleDown
+
 
 class MaxHeap:
     def __init__(self, items=[]):
@@ -21,7 +22,7 @@ class MaxHeap:
             return self.heap[1]
         else:
             return False
-            
+
     def pop(self):
         if len(self.heap) > 2:
             self.__swap(1, len(self.heap) - 1)
@@ -29,7 +30,7 @@ class MaxHeap:
             self.__bubbleDown(1)
         elif len(self.heap) == 2:
             max = self.heap.pop()
-        else: 
+        else:
             max = False
         return max
 
@@ -55,6 +56,7 @@ class MaxHeap:
         if largest != index:
             self.__swap(index, largest)
             self.__bubbleDown(largest)
+
 
 m = MaxHeap([95, 3, 21])
 m.push(10)

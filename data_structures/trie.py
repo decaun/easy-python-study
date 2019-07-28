@@ -1,10 +1,13 @@
-#https://github.com/nepsilon/Python-Trie
-#https://www.youtube.com/watch?v=zIjfhVPRZCg
+# https://github.com/nepsilon/Python-Trie
+# https://www.youtube.com/watch?v=zIjfhVPRZCg
+
+
 class Node():
     def __init__(self, value):
         self.childs = list()
         self.value = value
         self.terminal = False
+
 
 class Trie():
     def __init__(self):
@@ -27,10 +30,10 @@ class Trie():
         self.curr.terminal = True
 
     def dump(self, i=0):
-        print (self.curr.value)
+        print(self.curr.value)
         if self.curr.terminal:
             print
-            print (" "*i)
+            print(" "*i)
         for c in self.curr.childs:
             self.curr = c
             self.dump(i+2)
@@ -61,6 +64,7 @@ class Trie():
             else:
                 return False
         return True
+
 
 '''
 >>> from trie import Trie

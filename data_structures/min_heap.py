@@ -1,5 +1,6 @@
 # Author: OMKAR PATHAK
 
+
 class BinaryHeap(object):
     def __init__(self):
         self.heap = [0]
@@ -12,7 +13,8 @@ class BinaryHeap(object):
     # for shifting the node up
     def shiftUp(self, index):
         while (index // 2) > 0:
-            if self.heap[index] < self.heap[index // 2]:     # (currentSize // 2) is the parent
+            # (currentSize // 2) is the parent
+            if self.heap[index] < self.heap[index // 2]:
                 temp = self.heap[index // 2]
                 self.heap[index // 2] = self.heap[index]
                 self.heap[index] = temp
@@ -35,7 +37,7 @@ class BinaryHeap(object):
             index = minimumChild
 
     # for finding the child with minimum value
-    def minChild(self,i):
+    def minChild(self, i):
         if i * 2 + 1 > self.currentSize:
             return i * 2
         else:
@@ -62,8 +64,9 @@ class BinaryHeap(object):
             self.shiftDown(i)
             i = i - 1
 
+
 bh = BinaryHeap()
-bh.buildHeap([9,5,6,2,3])
+bh.buildHeap([9, 5, 6, 2, 3])
 
 print('Deleted:', bh.delete())
 print('Deleted:', bh.delete())

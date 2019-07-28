@@ -1,5 +1,6 @@
-#https://github.com/vprusso/youtube_tutorials/blob/master/data_structures/trees/binary_trees
-#https://www.youtube.com/watch?v=aM-oswPn19o&t=4s
+# https://github.com/vprusso/youtube_tutorials/blob/master/data_structures/trees/binary_trees
+# https://www.youtube.com/watch?v=aM-oswPn19o&t=4s
+
 
 class Queue(object):
     def __init__(self):
@@ -47,7 +48,7 @@ class BinaryTree(object):
 
     def levelorder_print(self, start):
         if start is None:
-            return 
+            return
 
         queue = Queue()
         queue.enqueue(start)

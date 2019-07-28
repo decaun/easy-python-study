@@ -1,4 +1,5 @@
-from abc import ABCMeta, abstractmethod,ABC
+from abc import ABCMeta, abstractmethod, ABC
+
 
 class abstract(metaclass=ABCMeta):
 
@@ -6,15 +7,17 @@ class abstract(metaclass=ABCMeta):
     def method(self):
         pass
 
+
 class abstract_i(ABC):
-    
+
     @abstractmethod
     def method(self):
         pass
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     print("main")
-    x=Test()
+    x = Test()
     print(x)
-    #y=Test2()
-    #print(y)
+    # y=Test2()
+    # print(y)

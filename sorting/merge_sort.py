@@ -1,14 +1,16 @@
-#https://github.com/OmkarPathak/Data-Structures-using-Python/blob/master/Sorting
+# https://github.com/OmkarPathak/Data-Structures-using-Python/blob/master/Sorting
+
 
 def merge_sort(array):
     if len(array) < 2:
         return array
-    
+
     mid = len(array) // 2
     left = merge_sort(array[:mid])
     right = merge_sort(array[mid:])
-    
+
     return merge(left, right)
+
 
 def merge(left, right):
     result = []
@@ -23,5 +25,5 @@ def merge(left, right):
         if i == len(left) or j == len(right):
             result.extend(left[i:] or right[j:])
             break
-    
+
     return result

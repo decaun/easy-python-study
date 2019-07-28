@@ -1,7 +1,8 @@
-#https://realpython.com/factory-method-python/
+# https://realpython.com/factory-method-python/
 
 import json
 import xml.etree.ElementTree as et
+
 
 class Song:
     def __init__(self, song_id, title, artist):
@@ -29,7 +30,8 @@ class SongSerializer:
         else:
             raise ValueError(format)
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     song = Song('1', 'Water of Love', 'Dire Straits')
     serializer = SongSerializer()
     print(serializer.serialize(song, 'JSON'))

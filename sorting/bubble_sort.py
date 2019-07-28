@@ -1,7 +1,8 @@
-#https://github.com/OmkarPathak/Data-Structures-using-Python/blob/master/Sorting
+# https://github.com/OmkarPathak/Data-Structures-using-Python/blob/master/Sorting
+
 
 def bubble_sort(array):
     for i in range(len(array) - 1):
         for j in range(len(array) - 1):
             if array[j] > array[j + 1]:
-                array[j], array[j + 1] = array[j + 1], array[j] # swap
+                array[j], array[j + 1] = array[j + 1], array[j]  # swap

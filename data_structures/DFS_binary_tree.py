@@ -1,5 +1,6 @@
-#https://github.com/vprusso/youtube_tutorials/tree/master/data_structures/trees
-#https://www.youtube.com/watch?v=6oL-0TdVy28
+# https://github.com/vprusso/youtube_tutorials/tree/master/data_structures/trees
+# https://www.youtube.com/watch?v=6oL-0TdVy28
+
 
 class Node(object):
     def __init__(self, value):
@@ -52,10 +53,11 @@ class BinaryTree(object):
 # 4-2-5-1-6-3-7
 # 4-2-5-6-3-7-1
 #               1
-#           /       \  
-#          2          3  
+#           /       \
+#          2          3
 #         /  \      /   \
-#        4    5     6   7 
+#        4    5     6   7
+
 
 # Set up tree:
 tree = BinaryTree(1)
@@ -66,6 +68,6 @@ tree.root.left.right = Node(5)
 tree.root.right.left = Node(6)
 tree.root.right.right = Node(7)
 
-#print(tree.print_tree("preorder"))
-#print(tree.print_tree("inorder"))
+# print(tree.print_tree("preorder"))
+# print(tree.print_tree("inorder"))
 print(tree.print_tree("postorder"))

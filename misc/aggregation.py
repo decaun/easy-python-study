@@ -1,23 +1,26 @@
-#Aggregation defines Has-a relation
-#Associated classes has unidirectional association
-#Objects are independent, if one dies other survives
+# Aggregation defines Has-a relation
+# Associated classes has unidirectional association
+# Objects are independent, if one dies other survives
+
 
 class Salary:
     def __init__(self, pay, bonus):
-        self.pay=pay
-        self.bonus=bonus
+        self.pay = pay
+        self.bonus = bonus
 
     def annual_salary(self):
-       return (self.pay*12) + self.bonus
+        return (self.pay*12) + self.bonus
+
 
 class Employee:
     def __init__(self, name, age, salary):
-        self.name=name
-        self.age=age
-        self.obj_salary=salary#aggregation
+        self.name = name
+        self.age = age
+        self.obj_salary = salary  # aggregation
 
     def total_salary(self):
         return self.obj_salary.annual_salary()
+
 
 salary = Salary(15000, 10000)
 emp = Employee('max', 25, salary)

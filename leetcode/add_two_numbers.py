@@ -17,6 +17,7 @@ Explanation: 342 + 465 = 807.
 #         self.val = x
 #         self.next = None
 
+
 class Solution(object):
     def addTwoNumbers(self, l1, l2):
         """
@@ -24,26 +25,27 @@ class Solution(object):
         :type l2: ListNode
         :rtype: ListNode
         """
-        def add_list_on_node(node,list,carry=0):
-            node.val=(node.val+list.val+carry)
-            carry=node.val//10
-            node.val=node.val%10
+        def add_list_on_node(node, list, carry=0):
+            node.val = (node.val+list.val+carry)
+            carry = node.val//10
+            node.val = node.val % 10
             if list.next:
                 if node.next:
-                    node.next=add_list_on_node(node.next,list.next,carry)
+                    node.next = add_list_on_node(node.next, list.next, carry)
                 else:
-                    node.next=add_list_on_node(ListNode(0),list.next,carry)
-            elif carry>0 and node.next==None:
-                node.next=add_list_on_node(ListNode(0),ListNode(0),carry)
-            elif carry>0 and list.next==None:
-                node.next=add_list_on_node(node.next,ListNode(0),carry)
+                    node.next = add_list_on_node(ListNode(0), list.next, carry)
+            elif carry > 0 and node.next == None:
+                node.next = add_list_on_node(ListNode(0), ListNode(0), carry)
+            elif carry > 0 and list.next == None:
+                node.next = add_list_on_node(node.next, ListNode(0), carry)
             return node
-        
-        node=ListNode(0)
-        r=add_list_on_node(node,l1)
-        r=add_list_on_node(r,l2)
-            
+
+        node = ListNode(0)
+        r = add_list_on_node(node, l1)
+        r = add_list_on_node(r, l2)
+
         return r
+
 
 '''
 Runtime: 68 ms, faster than 64.70% of Python online submissions for Add Two Numbers.
