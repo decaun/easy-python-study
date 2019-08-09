@@ -1,7 +1,8 @@
 {
     "svn.ignoreMissingSvnWarning": true,
-    "python.pythonPath": "C:\\ProgramData\\Miniconda3\\python.exe",
+    "python.pythonPath": "C:\\Users\\deniz.uner.ext\\AppData\\Local\\Continuum\\miniconda3\\python.exe",
     "python.linting.pylintEnabled": false,
     "python.linting.pep8Enabled": true,
-    "python.linting.enabled": true
+    "python.linting.enabled": true,
+    "python.linting.flake8Enabled": false
 }
