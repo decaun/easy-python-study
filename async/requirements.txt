@@ -1,0 +1,4 @@
+asyncio
+websockets
+websocket_client
+websocket

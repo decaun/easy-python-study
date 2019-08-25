@@ -1,22 +1,24 @@
 from autobahn.twisted.websocket import WebSocketServerProtocol
 
+
 class MyServerProtocol(WebSocketServerProtocol):
 
-   def onMessage(self, payload, isBinary):
-      ## echo back message verbatim
-      self.sendMessage(payload, isBinary)
+    def onMessage(self, payload, isBinary):
+        # echo back message verbatim
+        self.sendMessage(payload, isBinary)
+
 
 if __name__ == '__main__':
 
-   import sys
+    import sys
 
-   from twisted.python import log
-   from twisted.internet import reactor
-   log.startLogging(sys.stdout)
+    from twisted.python import log
+    from twisted.internet import reactor
+    log.startLogging(sys.stdout)
 
-   from autobahn.twisted.websocket import WebSocketServerFactory
-   factory = WebSocketServerFactory()
-   factory.protocol = MyServerProtocol
+    from autobahn.twisted.websocket import WebSocketServerFactory
+    factory = WebSocketServerFactory()
+    factory.protocol = MyServerProtocol
 
-   reactor.listenTCP(9000, factory)
-   reactor.run()
+    reactor.listenTCP(9000, factory)
+    reactor.run()
