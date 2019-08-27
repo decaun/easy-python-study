@@ -1,6 +1,7 @@
 import asyncio
 import websockets
 
+
 async def message():
     async with websockets.connect("ws://localhost:1234") as socket:
         msg = input("Message")
