@@ -11,7 +11,7 @@ class Add(faust.Record):
     b: int
 
 
-rpc_app = faust.App('RPCClientApp', reply_create_topic=True, broker_max_poll_records=1000,
+rpc_app = faust.App('RPCClientApp', reply_create_topic=False, broker_max_poll_records=1000,
                     stream_publish_on_commit=True,
                     stream_buffer_maxsize=1000, broker_commit_interval=0.001,
                     broker_commit_every=0.001)
@@ -20,10 +20,7 @@ topic = rpc_app.topic('adding', value_type=Add)
 
 @rpc_app.agent(topic)
 async def adding(stream):
-    async for value in stream:
-        # here we receive Add objects, add a + b.
-        print(value['a'])
-        yield value['a']+value['b']
+    pass
 
 
 routes = web.RouteTableDef()
@@ -33,7 +30,6 @@ routes = web.RouteTableDef()
 async def hello(request):
     params = request.rel_url.query
     # await asyncio.sleep(random.randrange(0, 10))
-    resp = 
     return web.Response(text="Hello, world " + str(await adding.ask(Add(a=4, b=random.randrange(100)))) +
                         (params['id'] if request.rel_url.query else ""))
 
