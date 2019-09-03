@@ -28,8 +28,8 @@ topic = app.topic('adding', value_type=Add)
 async def adding(stream):
     async for value in stream:
         # here we receive Add objects, add a + b.
-        print(value['a'])
-        yield value['a']+value['b']
+        print(value['b'])
+        yield value['b']
 
 if __name__ == '__main__':
     app.main()

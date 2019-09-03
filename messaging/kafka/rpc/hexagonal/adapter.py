@@ -3,7 +3,6 @@ import asyncio
 import uvloop
 import random
 import faust
-import random
 
 
 class Add(faust.Record):
@@ -29,11 +28,14 @@ routes = web.RouteTableDef()
 @routes.get('/')
 async def hello(request):
     params = request.rel_url.query
-    # await asyncio.sleep(random.randrange(0, 10))
-    return web.Response(text="Hello, world " + str(await adding.ask(Add(a=4, b=random.randrange(100)))) +
+    wait=random.randrange(0, 10)
+    reply = str(await adding.ask(Add(a=4, b=wait)))
+    await asyncio.sleep(wait)
+    return web.Response(text="Hello, world " + reply +
                         (params['id'] if request.rel_url.query else ""))
 
 # asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-app = web.Application()
+loop = asyncio.get_event_loop()
+app = web.Application(loop=loop)
 app.add_routes(routes)
 web.run_app(app)
