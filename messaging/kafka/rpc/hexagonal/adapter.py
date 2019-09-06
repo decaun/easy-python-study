@@ -1,6 +1,7 @@
 from aiohttp import web
+import aiohttp
 import asyncio
-import uvloop
+# import uvloop
 import random
 import faust
 
@@ -28,12 +29,16 @@ routes = web.RouteTableDef()
 @routes.get('/')
 async def hello(request):
     params = request.rel_url.query
-    wait=random.randrange(0, 10)
-    reply = str(await adding.ask(Add(a=4, b=wait)))
-    await asyncio.sleep(wait)
-    return web.Response(text="Hello, world " + reply +
-                        (params['id'] if request.rel_url.query else ""))
-
+    wait = random.randrange(0, 10)
+    timeout = aiohttp.ClientTimeout(total=5, connect=1,
+                                    sock_connect=1, sock_read=1)
+    async with aiohttp.ClientSession(timeout=timeout) as session:
+        reply = str(await adding.ask(Add(a=4, b=wait)))
+        await asyncio.sleep(wait)
+        return web.Response(text="Hello, world " + reply +
+                            (params['id'] if request.rel_url.query else ""))
+# uvloop not stable for handling requests but
+# better to use it for performing requests
 # asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 loop = asyncio.get_event_loop()
 app = web.Application(loop=loop)
