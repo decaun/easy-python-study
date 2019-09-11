@@ -1,10 +1,10 @@
 from aiohttp import web
 import aiohttp
 import asyncio
-# import uvloop
 import random
 import faust
-
+# from tornado.platform.asyncio import AsyncIOMainLoop
+# import uvloop
 
 class Add(faust.Record):
     a: int
@@ -34,13 +34,25 @@ async def hello(request):
                                     sock_connect=1, sock_read=1)
     async with aiohttp.ClientSession(timeout=timeout) as session:
         reply = str(await adding.ask(Add(a=4, b=wait)))
-        await asyncio.sleep(wait)
+        # await asyncio.sleep(wait)
         return web.Response(text="Hello, world " + reply +
                             (params['id'] if request.rel_url.query else ""))
 # uvloop not stable for handling requests but
 # better to use it for performing requests
-# asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-loop = asyncio.get_event_loop()
-app = web.Application(loop=loop)
-app.add_routes(routes)
-web.run_app(app)
+
+
+def main():
+    app = web.Application()
+    app.add_routes(routes)
+    web.run_app(app)
+
+
+if __name__ == "__main__":
+    # asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+    # AsyncIOMainLoop().install()
+
+    # 启动 Server
+    try:
+        main()
+    except Exception as e:
+        print(e)

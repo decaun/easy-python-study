@@ -1,4 +1,4 @@
-# python agent.py worker --without-web
+# python logic.py worker --without-web
 
 import faust
 
