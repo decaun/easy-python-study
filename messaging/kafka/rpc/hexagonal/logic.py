@@ -14,10 +14,10 @@ class Add(faust.Record):
 
 # Next, we create the Faust application object that
 # configures our environment.
-app = faust.App('agent-example', reply_create_topic=False, broker_max_poll_records=1000,
+app = faust.App('agent-example', reply_create_topic=True, broker_max_poll_records=1000,
                 stream_publish_on_commit=True,
-                stream_buffer_maxsize=1000, broker_commit_interval=0.001,
-                broker_commit_every=0.001)
+                stream_buffer_maxsize=1000, broker_commit_interval=0.0001,
+                broker_commit_every=0.0001)
 # The Kafka topic used by our agent is named 'adding',
 # and we specify that the values in this topic are of the Add model.
 # (you can also specify the key_type if your topic uses keys).

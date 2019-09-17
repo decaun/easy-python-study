@@ -6,15 +6,16 @@ import faust
 # from tornado.platform.asyncio import AsyncIOMainLoop
 # import uvloop
 
+
 class Add(faust.Record):
     a: int
     b: int
 
 
-rpc_app = faust.App('RPCClientApp', reply_create_topic=False, broker_max_poll_records=1000,
+rpc_app = faust.App('RPCClientApp', reply_create_topic=True, broker_max_poll_records=1000,
                     stream_publish_on_commit=True,
-                    stream_buffer_maxsize=1000, broker_commit_interval=0.001,
-                    broker_commit_every=0.001)
+                    stream_buffer_maxsize=1000, broker_commit_interval=0.0001,
+                    broker_commit_every=0.0001)
 topic = rpc_app.topic('adding', value_type=Add)
 
 
@@ -25,15 +26,14 @@ async def adding(stream):
 
 routes = web.RouteTableDef()
 
+timeout = aiohttp.ClientTimeout(total=5, connect=1,
+                                sock_connect=1, sock_read=1)
+
 
 @routes.get('/')
 async def hello(request):
-    params = request.rel_url.query
-    wait = random.randrange(0, 10)
-    timeout = aiohttp.ClientTimeout(total=5, connect=1,
-                                    sock_connect=1, sock_read=1)
     async with aiohttp.ClientSession(timeout=timeout) as session:
-        reply = str(await adding.ask(Add(a=4, b=wait)))
+        reply = str(await adding.ask(Add(a=4, b=5)))
         # await asyncio.sleep(wait)
         return web.Response(text="Hello, world " + reply +
                             (params['id'] if request.rel_url.query else ""))
