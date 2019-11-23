@@ -49,3 +49,5 @@ pip install flask-marshmallow
 pip install marshmallow-sqlalchemy
 
 https://www.youtube.com/watch?v=kRNXKzfYrPU
+
+https://3factor.app/

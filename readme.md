@@ -119,3 +119,20 @@ Namespaces are one honking great idea -- let's do more of those!
 # Code reuse
 
 # Extensibility
+
+# Tools
+
+## Testing
+
+- WebTest(http://webtest.readthedocs.io)
+- pytest and Tox
+
+## Documentation
+
+- The Sphinx tool (http://www.sphinx-doc.org/)
+- ReadTheDocs (RTD) (https://docs.readthedocs.io )
+- Coveralls (https://coveralls.io/).
+
+## CI/CD
+
+- Travis-CI (https://travis-ci.org/)

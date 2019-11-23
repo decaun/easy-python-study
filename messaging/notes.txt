@@ -1,0 +1,7 @@
+Properties
+- Idempotency
+Every message guaranteed to be sent at least once (eventually consistent) however it is not guaranteed to be sent only once.
+So it should be idempotent which can be applied multiple times without changing the result beyond the initial application.
+http://shuttle.github.io/shuttle-esb/concepts-idempotence
+- Out of order messaging
+- 
