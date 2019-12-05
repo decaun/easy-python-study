@@ -118,7 +118,7 @@ entity.__change_attribute__(name='full_name', value='Mr Boots')
 # events logged at received_events
 
 received_events[0]
-received_events[2]
+received_events[1]
 
 # Clean up.
 unsubscribe(handler=receive_event, predicate=is_domain_event)
@@ -141,7 +141,126 @@ else:
 
 # Custom Entity
 
+from eventsourcing.domain.model.decorators import attribute
+
+
 class User(VersionedEntity):
+
     def __init__(self, full_name, *args, **kwargs):
         super(User, self).__init__(*args, **kwargs)
-        self.full_name = full_name
+        self._full_name = full_name
+
+    @attribute
+    def full_name(self):
+        '''
+        The full name of the user (an event-sourced attribute).
+        '''
+
+
+subscribe(handler=receive_event, predicate=is_domain_event)
+
+# Publish a Created event.
+user = User.__create__(full_name='Mrs Boots')
+
+# Publish an AttributeChanged event.
+user.full_name = 'Mr Boots'
+
+assert len(received_events) == 2
+assert received_events[0].__class__ == VersionedEntity.Created
+assert received_events[0].full_name == 'Mrs Boots'
+assert received_events[0].originator_version == 0
+assert received_events[0].originator_id == user.id
+
+assert received_events[1].__class__ == VersionedEntity.AttributeChanged
+assert received_events[1].value == 'Mr Boots'
+assert received_events[1].name == '_full_name'
+assert received_events[1].originator_version == 1
+assert received_events[1].originator_id == user.id
+
+# Clean up.
+unsubscribe(handler=receive_event, predicate=is_domain_event)
+del received_events[:]  # received_events.clear()
+
+
+# Custom Command
+
+class User(VersionedEntity):
+
+    def __init__(self, *args, **kwargs):
+        super(User, self).__init__(*args, **kwargs)
+        self._password = None
+
+    def set_password(self, raw_password):
+        # Do some work using the arguments of a command.
+        password = self._encode_password(raw_password)
+
+        # Change private _password attribute.
+        self.__change_attribute__('_password', password)
+
+    def check_password(self, raw_password):
+        password = self._encode_password(raw_password)
+        return self._password == password
+
+    def _encode_password(self, password):
+        return ''.join(reversed(password))
+
+
+user = User(id='1', __version__=0)
+
+user.set_password('password')
+assert user.check_password('password')
+
+# Custom Event
+
+class World(VersionedEntity):
+
+    def __init__(self, *args, **kwargs):
+        super(World, self).__init__(*args, **kwargs)
+        self.history = []
+
+    def make_it_so(self, something):
+        # Do some work using the arguments of a command.
+        what_happened = something
+
+        # Trigger event with the results of the work.
+        self.__trigger_event__(World.SomethingHappened, what=what_happened)
+
+    class SomethingHappened(VersionedEntity.Event):
+        """Triggered when something happens in the world."""
+        def mutate(self, obj):
+            obj.history.append(self.what)
+
+
+# Base aggregate
+# the method __save__(), which publishes all pending 
+# events to the publish-subscribe mechanism as a single list
+
+from eventsourcing.domain.model.aggregate import BaseAggregateRoot
+
+
+class World(BaseAggregateRoot):
+    """
+    Example domain entity, with mutator function on domain event.
+    """
+    def __init__(self, *args, **kwargs):
+        super(World, self).__init__(*args, **kwargs)
+        self.history = []
+
+    def make_things_so(self, *somethings):
+        for something in somethings:
+            self.__trigger_event__(World.SomethingHappened, what=something)
+
+    class SomethingHappened(BaseAggregateRoot.Event):
+        def mutate(self, obj):
+            obj.history.append(self.what)
+
+subscribe(handler=receive_event)
+
+world = World.__create__()
+world.make_things_so('dinosaurs', 'trucks', 'internet')
+len(received_events)
+len(world.__pending_events__)
+world.__save__()
+
+len(received_events)
+len(world.__pending_events__)
