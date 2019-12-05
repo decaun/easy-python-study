@@ -40,8 +40,9 @@ def fake_save_user(user_in: UserIn):
     print('Size of log: {}'.format(len(received_events)))
     return user_in_db
 
+
 class CustomEvent(EventWithOriginatorID):
-    def __init__(self,originator_id):
+    def __init__(self, originator_id):
         super().__init__(originator_id)
         print('Custom event happened! ID: {}'.format(self.originator_id))
 
@@ -49,15 +50,16 @@ class CustomEvent(EventWithOriginatorID):
 def receive_event(event):
     received_events.append(event)
 
+
 def is_domain_event(event):
     return isinstance(event, CustomEvent)
 
+
 subscribe(handler=receive_event, predicate=is_domain_event)
+
 
 @app.post("/user/", response_model=UserOut)
 async def create_user(*, user_in: UserIn):
     user_saved = fake_save_user(user_in)
     publish(event=CustomEvent(originator_id=uuid4()))
     return user_saved
-
-
