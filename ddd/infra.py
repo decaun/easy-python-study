@@ -117,13 +117,18 @@ print(domain_event.foo)
 sequenced_item = customized_sequenced_item_mapper.item_from_event(domain_event)
 print(sequenced_item.state)
 
-from eventsourcing.utils.transcoding import encoder, decoder
+from eventsourcing.utils.cipher.aes import AESCipher
+from eventsourcing.utils.random import encode_random_bytes, decode_bytes
 
-@encoder.register(set)
-def encode_set(obj):
-    return {"__set__": sorted(list(obj))}
+# Unicode string representing 256 random bits encoded with Base64.
+cipher_key = encode_random_bytes(num_bytes=32)
 
+# Construct AES-256 cipher.
+cipher = AESCipher(cipher_key=decode_bytes(cipher_key))
 
-@decoder.register("__set__")
-def decode_set(d):
-    return set(d["__set__"])
+# Encrypt some plaintext (using nonce arguments).
+ciphertext = cipher.encrypt('plaintext')
+
+# Decrypt some ciphertext.
+plaintext = cipher.decrypt(ciphertext)
+
