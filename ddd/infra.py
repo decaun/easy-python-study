@@ -132,3 +132,111 @@ ciphertext = cipher.encrypt('plaintext')
 # Decrypt some ciphertext.
 plaintext = cipher.decrypt(ciphertext)
 
+
+# Construct sequenced item mapper to always encrypt domain events.
+ciphered_sequenced_item_mapper = SequencedItemMapper(
+    sequenced_item_class=StoredEvent,
+    cipher=cipher,
+)
+
+# Map the domain event to an encrypted stored event namedtuple.
+stored_event = ciphered_sequenced_item_mapper.item_from_event(domain_event1)
+print(stored_event.state)
+# Recover the domain event from the encrypted state.
+domain_event = ciphered_sequenced_item_mapper.event_from_item(stored_event)
+print(domain_event)
+sequenced_item = customized_sequenced_item_mapper.item_from_event(domain_event)
+print(sequenced_item.state)
+
+# Record Managers
+from eventsourcing.infrastructure.sqlalchemy.records import StoredEventRecord
+from eventsourcing.infrastructure.sqlalchemy.datastore import SQLAlchemySettings
+
+settings = SQLAlchemySettings(uri='sqlite:///:memory:')
+
+from eventsourcing.infrastructure.sqlalchemy.datastore import SQLAlchemyDatastore
+
+datastore = SQLAlchemyDatastore(
+    settings=settings,
+    tables=(StoredEventRecord,)
+)
+
+# Setup datastore objects
+datastore.setup_connection()
+datastore.setup_tables()
+
+from eventsourcing.infrastructure.sqlalchemy.manager import SQLAlchemyRecordManager
+
+# Record manager writes items to database
+record_manager = SQLAlchemyRecordManager(
+    sequenced_item_class=StoredEvent,
+    record_class=StoredEventRecord,
+    session=datastore.session,
+    contiguous_record_ids=True,
+    application_name=uuid4().hex
+)
+
+record_manager.record_sequenced_item(stored_event1)
+results = record_manager.list_items(aggregate1)
+assert results[0] == stored_event1
+
+from eventsourcing.infrastructure.eventstore import EventStore
+
+# EventStore provides an interface to the library’s cohesive mechanism for storing events as sequences of items
+event_store = EventStore(
+    sequenced_item_mapper=sequenced_item_mapper,
+    record_manager=record_manager,
+)
+
+# These parts are different than docs
+# 1st DomainEvent was stored_event1 now creating 2nd DomainEvent on aggregate1
+event_store.store([
+    DomainEvent(
+        originator_id=aggregate1,
+        originator_version=1,
+        foo='baz',
+    )
+])
+
+result = event_store.get_most_recent_event(aggregate1)
+results = event_store.get_domain_events(aggregate1, limit=20, is_ascending=True)
+print(results)
+print(results[0].foo)
+print(results[1].foo)
+
+from eventsourcing.exceptions import ConcurrencyError
+
+# Fail to append an event at the same position in the same sequence as a previous event.
+try:
+    event_store.store([
+        DomainEvent(
+            originator_id=aggregate1,
+            originator_version=1,
+            foo='baz',
+        )
+    ])
+except ConcurrencyError:
+    f"{ConcurrencyError}"
+else:
+    raise Exception("ConcurrencyError not raised")
+
+
+from eventsourcing.domain.model.decorators import retry
+
+errors = []
+
+@retry(ConcurrencyError, max_attempts=5)
+def set_password():
+    exc = ConcurrencyError()
+    errors.append(exc)
+    raise exc
+
+try:
+    set_password()
+except ConcurrencyError:
+    pass
+else:
+    raise Exception("Shouldn't get here")
+
+f'{errors}'
+
