@@ -1,3 +1,5 @@
+# eventsourcing==7.2.4
+
 from eventsourcing.exceptions import ConcurrencyError
 from eventsourcing.application.sqlalchemy import SQLAlchemyApplication
 import os

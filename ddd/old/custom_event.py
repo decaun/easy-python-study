@@ -1,3 +1,5 @@
+# eventsourcing==7.2.4
+
 from eventsourcing.domain.model.events import subscribe
 from eventsourcing.domain.model.events import publish
 from eventsourcing.domain.model.events import EventWithOriginatorID

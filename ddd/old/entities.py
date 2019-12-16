@@ -1,3 +1,6 @@
+# eventsourcing==7.2.4
+
+
 from eventsourcing.exceptions import EntityIsDiscarded
 from eventsourcing.domain.model.events import DomainEvent
 from eventsourcing.domain.model.events import publish

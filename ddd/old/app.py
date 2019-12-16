@@ -1,3 +1,5 @@
+# eventsourcing==7.2.4
+
 from eventsourcing.utils.random import encoded_random_bytes
 
 # Keep this safe (random bytes encoded with Base64).

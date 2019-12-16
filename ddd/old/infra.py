@@ -1,3 +1,4 @@
+# eventsourcing==7.2.4
 from collections import namedtuple
 
 SequencedItem = namedtuple('SequencedItem', ['sequence_id', 'position', 'topic', 'data'])
