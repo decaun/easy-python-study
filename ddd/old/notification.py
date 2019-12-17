@@ -1,3 +1,4 @@
+# eventsourcing==7.2.4
 from eventsourcing.application.notificationlog import RecordManagerNotificationLog
 from eventsourcing.infrastructure.integersequencegenerators.base import SimpleIntegerSequenceGenerator
 from eventsourcing.domain.model.array import BigArray

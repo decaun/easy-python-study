@@ -73,5 +73,39 @@ print(section.section_id )
 print(len(notification_log.get_items(start=0,stop=1000)))
 
 #each section has its own items (section as linked list of objects)
-print(section.items)
 print([n['originator_id'] for n in section.items])
+
+
+def resolve_notifications(notifications):
+    return [
+        sequenced_item_mapper.event_from_topic_and_state(
+            topic=notification['topic'],
+            state=notification['state']
+        ) for notification in notifications
+    ]
+
+domain_events = resolve_notifications(section.items)
+
+
+# Additional big array
+from uuid import uuid4
+from eventsourcing.domain.model.array import BigArray
+from eventsourcing.infrastructure.repositories.array import BigArrayRepository
+
+
+repo = BigArrayRepository(
+    event_store=event_store,
+    array_size=10000
+)
+
+big_array = repo[uuid4()]
+big_array.append('item0')
+big_array.append('item1')
+big_array.append('item2')
+big_array.append('item3')
+
+notification_log.get_items(start=0,stop=1000)[3]['state']
+domain_events = resolve_notifications(notification_log['current'].items)
+print(domain_events[3].item)
+# In this event [4] Item append done to big array entity
+print(domain_events[4].item)
