@@ -1,6 +1,6 @@
 3 types
-*At least once
 *At most once
+*At least once
     -Should be idempotent
 *Exactly once
 
