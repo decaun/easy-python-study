@@ -11,3 +11,6 @@ So it should be idempotent which can be applied multiple times without changing 
 http://shuttle.github.io/shuttle-esb/concepts-idempotence
 - Out of order messaging
 - 
+
+About messaging and CQRS at event sourcing
+https://www.youtube.com/watch?v=wBvH7foXXUY
