@@ -1,3 +1,9 @@
+3 types
+*At least once
+*At most once
+    -Should be idempotent
+*Exactly once
+
 Properties
 - Idempotency
 Every message guaranteed to be sent at least once (eventually consistent) however it is not guaranteed to be sent only once.

@@ -109,3 +109,62 @@ domain_events = resolve_notifications(notification_log['current'].items)
 print(domain_events[3].item)
 # In this event [4] Item append done to big array entity
 print(domain_events[4].item)
+
+
+from eventsourcing.application.notificationlog import BigArrayNotificationLog
+
+# Construct notification log.
+big_array_notification_log = BigArrayNotificationLog(big_array, section_size=5)
+
+# Get the "current "section from the big array notification log.
+section = big_array_notification_log['current']
+section.items
+
+# Remote notification logs
+# check class RemoteNotificationLog
+
+
+import json
+
+from eventsourcing.interface.notificationlog import NotificationLogView
+from eventsourcing.utils.transcoding import ObjectJSONEncoder, ObjectJSONDecoder
+
+view = NotificationLogView(
+    notification_log=notification_log,
+    json_encoder=ObjectJSONEncoder()
+)
+# Serizlized section as bellow
+view.present_resource('section_size')
+view.present_resource('current')
+view.present_resource('1,5')
+
+
+section_json = view.present_resource('1,5')
+
+# Can be dict.
+section_dict = ObjectJSONDecoder().decode(section_json)
+len(section_dict['items'])
+print(section_dict['items'][1]['topic'])
+
+# Also resolves dict2event
+domain_events = resolve_notifications(section_dict['items'])
+
+# NotificationLogReader effectively functions as an iterator, yielding 
+# a continuous sequence of notifications that it discovers from the 
+# sections of a notification log, local or remote.
+
+from eventsourcing.application.notificationlog import NotificationLogReader
+
+# Construct log reader.
+reader = NotificationLogReader(notification_log)
+reader.seek(0)
+all_notifications = reader.read_list()
+domain_events = resolve_notifications(all_notifications)
+
+# events of an application can be followed
+reader.seek(0)
+few_notifications=reader.read_list(2)
+few_more_notifications=reader.read_list(2)
+
+# Clean up.
+persistence_policy.close()
