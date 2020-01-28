@@ -15,8 +15,7 @@
                 ],
                 "settings": {
                     "foreground": "#24a137",
-                    "fontStyle": "",
-                    "editor.fontFamily": "Operator Mono"
+                    "fontStyle": ""
                 }
             }
         ]
