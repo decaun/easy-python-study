@@ -1,8 +1,8 @@
 {
     "svn.ignoreMissingSvnWarning": true,
-    "python.pythonPath": "/home/student/.conda/envs/env1/bin/python",
+    "python.pythonPath": "/home/deniz/Desktop/myenv/bin/python",
     "python.linting.pylintEnabled": false,
-    "python.linting.pycodestyleEnabled": true,
+    "python.linting.pycodestyleEnabled": false,
     "python.linting.enabled": true,
-    "python.linting.flake8Enabled": false
+    "python.linting.flake8Enabled": true
 }
