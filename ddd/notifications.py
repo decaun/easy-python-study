@@ -142,7 +142,7 @@ view.present_resource('1,5')
 section_json = view.present_resource('1,5')
 
 # Can be dict.
-section_dict = ObjectJSONDecoder().decode(section_json)
+section_dict = ObjectJSONDecoder().decode(section_json.decode('utf-8'))
 len(section_dict['items'])
 print(section_dict['items'][1]['topic'])
 

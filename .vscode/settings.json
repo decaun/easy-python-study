@@ -1,8 +1,43 @@
 {
+    "editor.tokenColorCustomizations": {
+        "textMateRules": [
+            {
+                "scope": [
+                    "comment",
+                    "comment storage.type",
+                    "comment variable",
+                    "comment support.variable", 
+                    "comment support.class",
+                    "comment support.type",
+                    "comment entity.name.type",
+                    "comment entity.name.class",
+                    "comment keyword.operator"
+                ],
+                "settings": {
+                    "foreground": "#24a137",
+                    "fontStyle": ""
+                }
+            }
+        ]
+    },
+    "workbench.colorCustomizations": {
+        "editor.selectionBackground": "#6065fbc3"
+    },
     "svn.ignoreMissingSvnWarning": true,
     "python.pythonPath": "/home/deniz/Desktop/myenv/bin/python",
     "python.linting.pylintEnabled": false,
     "python.linting.pycodestyleEnabled": false,
     "python.linting.enabled": true,
+<<<<<<< HEAD
     "python.linting.flake8Enabled": true
+=======
+    "python.linting.flake8Enabled": true,
+    "workbench.colorTheme": "Signed Dark Pro",
+    "pythonPreview.dark.dict-class-instKey.bgColor": "#ffffff",
+    "pythonPreview.dark.dict-class-instVal.bgColor": "#ffffff",
+    "pythonPreview.dark.highlightedArrow.color": "#ffffff",
+    "pythonPreview.dark.highlightedStackFrame.bgColor": "#ffffff",
+    "pythonPreview.dark.list-tuple-setTbl.bgColor": "#ffffff",
+    "code-runner.runInTerminal": true
+>>>>>>> b7496312b13549ad74ec3f931dd3dc577aecb268
 }
