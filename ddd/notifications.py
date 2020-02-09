@@ -12,6 +12,7 @@ from eventsourcing.infrastructure.sqlalchemy.datastore import SQLAlchemyDatastor
 from eventsourcing.infrastructure.sqlalchemy.manager import SQLAlchemyRecordManager
 from eventsourcing.infrastructure.sqlalchemy.records import StoredEventRecord
 
+
 # Setup the database.
 datastore = SQLAlchemyDatastore(
     settings=SQLAlchemySettings(),
